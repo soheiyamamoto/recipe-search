@@ -23,12 +23,12 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      # 配布物は src/ のみ公開(docs/ の仕様書は公開しない)
+      # 配布物は src/ のみ公開(docs/ の仕様書は公開しない)。
+      # 配布物本体は src/index.html。src/ 配下をそのまま公開ルートへ配置する。
       - name: Build site
         run: |
           mkdir _site
           cp -r src/. _site/
-          cp src/sanpiryoron_seasonal_recipes.html _site/index.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

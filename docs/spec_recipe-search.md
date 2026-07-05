@@ -3,7 +3,7 @@
 - 最終更新: 2026-07-05
 - 管理: spec-writer(辞書変更時は doc-updater が本書を同期)
 - 実装: [../tools/update_recipes.py](../tools/update_recipes.py) /
-  配布物: [../src/sanpiryoron_seasonal_recipes.html](../src/sanpiryoron_seasonal_recipes.html)
+  配布物: [../src/index.html](../src/index.html)
 
 ## 1. 概要
 
@@ -155,7 +155,7 @@ CSV の `season` 列に `all` を指定する。
 ## 7. スマートフォン対応・公開(2026-07-05 追加)
 
 - **公開**: GitHub Pages。`.github/workflows/pages.yml` が main への push(src/ 変更時)で
-  src/ のみを公開し、`sanpiryoron_seasonal_recipes.html` を `index.html` として配信する。
+  src/ のみを公開し、`src/index.html` を公開ルートの `index.html` として配信する。
   docs/(仕様書)・tools/・data/ は公開対象外。
 - **PWA / ホーム画面追加**: `src/manifest.webmanifest`(display: standalone、
   short_name「旬のレシピ」、テーマ色 #223a54 / 背景色 #e9e4d7)と

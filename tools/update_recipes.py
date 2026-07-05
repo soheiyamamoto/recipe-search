@@ -14,7 +14,7 @@ import csv, re, sys
 from datetime import datetime
 
 CSV_PATH  = sys.argv[1] if len(sys.argv) > 1 else 'youtube_uploads.csv'
-HTML_PATH = sys.argv[2] if len(sys.argv) > 2 else 'sanpiryoron_seasonal_recipes.html'
+HTML_PATH = sys.argv[2] if len(sys.argv) > 2 else 'index.html'
 
 # ---- 材料辞書 (表示タグ: 検索キーワード群) ----
 MATERIAL_DICT = {

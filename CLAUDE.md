@@ -1,12 +1,12 @@
 # CLAUDE.md
 
 ## レシピ検索帳(recipe-search)の規約
-- 配布物は src/sanpiryoron_seasonal_recipes.html の単一ファイル。外部依存は
+- 配布物は src/index.html の単一ファイル。外部依存は
   Google Fonts のみ(オフラインでもレイアウト崩れなしで動作すること)。
 - スマホ対応の付属物として src/manifest.webmanifest と src/icons/(PWA・
   ホーム画面アイコン)を併置。HTML 単体でも(アイコン無しで)動作すること。
 - 公開は GitHub Pages(.github/workflows/pages.yml)。src/ のみ公開し、
-  sanpiryoron_seasonal_recipes.html を index.html として配信。docs/ は非公開。
+  src/index.html を公開ルートの index.html として配信。docs/ は非公開。
 - レシピデータは HTML 内の // ===RECIPES_START=== 〜 // ===RECIPES_END===
   区間のみ。手編集せず tools/update_recipes.py 経由で更新する。
 - update_recipes.py の除外ルール:

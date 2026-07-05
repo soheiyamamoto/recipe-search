@@ -16,7 +16,7 @@ recipe-search/
 │   ├── spec_recipe-search.md     # 本体仕様(spec-writerが管理)
 │   └── pipeline_integration.md   # 本書
 ├── src/
-│   └── sanpiryoron_seasonal_recipes.html   # 配布物 = 実装(単一HTML)
+│   └── index.html                # 配布物 = 実装(単一HTML)= Pages公開ルート
 ├── tools/
 │   ├── update_recipes.py         # CSV → HTML 反映(除外・季節・材料の自動判定)
 │   ├── Get-SanpiVideoList.ps1    # YouTube Data API → CSV(代替取得手段)
@@ -34,7 +34,7 @@ recipe-search/
 
 ```markdown
 ## レシピ検索帳(recipe-search)の規約
-- 配布物は src/sanpiryoron_seasonal_recipes.html の単一ファイル。外部依存は
+- 配布物は src/index.html の単一ファイル。外部依存は
   Google Fonts のみ(オフラインでもレイアウト崩れなしで動作すること)。
 - レシピデータは HTML 内の // ===RECIPES_START=== 〜 // ===RECIPES_END===
   区間のみ。手編集せず tools/update_recipes.py 経由で更新する。
