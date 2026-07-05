@@ -1,0 +1,2933 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>笠原流 旬のレシピ検索帳【賛否両論】</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #e9e4d7;
+    --paper: #fffdf8;
+    --ink: #2b2925;
+    --ink-soft: #6b6459;
+    --indigo: #223a54;
+    --indigo-deep: #17283b;
+    --shu: #b4382b;            /* 朱色（はんこ） */
+    --line: #d8d0bd;
+
+    --spring: #7c9a3a;         /* 若草色 */
+    --summer: #1c7d8a;         /* 浅葱色 */
+    --autumn: #b8601f;         /* 柿色 */
+    --winter: #24478f;         /* 瑠璃色 */
+    --allseason: #4a6b52;      /* 常磐色 */
+  }
+  *{ box-sizing: border-box; }
+  body{
+    font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+    line-height: 1.7;
+    color: var(--ink);
+    background:
+      radial-gradient(1200px 400px at 50% -80px, rgba(180,56,43,0.05), transparent),
+      var(--bg);
+    margin: 0;
+    padding: 0;
+  }
+  .container{ max-width: 980px; margin: 0 auto; padding: 22px 16px 60px; }
+
+  /* ===== Header / signature hanko ===== */
+  header{
+    position: relative;
+    background: linear-gradient(160deg, var(--indigo) 0%, var(--indigo-deep) 100%);
+    color: #f4efe3;
+    padding: 30px 26px 26px;
+    border-radius: 10px;
+    margin-bottom: 22px;
+    overflow: hidden;
+  }
+  header::before{
+    content: "";
+    position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(135deg, rgba(244,239,227,0.035) 0 2px, transparent 2px 22px);
+    pointer-events: none;
+  }
+  .header-row{ display:flex; align-items:center; justify-content:space-between; gap:18px; position:relative; }
+  header h1{
+    margin: 0 0 6px 0;
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: 2px;
+  }
+  header p{ margin: 0; font-size: 13px; opacity: 0.75; letter-spacing: 0.5px; }
+  .hanko{
+    flex: none;
+    width: 62px; height: 62px;
+    border-radius: 50%;
+    border: 2.5px solid var(--shu);
+    color: var(--shu);
+    background: rgba(244,239,227,0.06);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 700;
+    font-size: 22px;
+    transform: rotate(-6deg);
+    letter-spacing: 1px;
+    box-shadow: 0 0 0 1px rgba(180,56,43,0.15) inset;
+  }
+
+  /* ===== Search ===== */
+  .search-box{
+    background: var(--paper);
+    padding: 18px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    margin-bottom: 16px;
+  }
+  .search-box label{ display:block; font-weight: 700; margin-bottom: 8px; color: var(--indigo); font-size: 14px; }
+  .search-field{ position: relative; }
+  .search-field input[type="text"]{
+    width: 100%;
+    padding: 12px 40px 12px 14px;
+    font-size: 16px;
+    border: 2px solid var(--line);
+    border-radius: 8px;
+    outline: none;
+    background: #fff;
+    color: var(--ink);
+    transition: border-color 0.15s;
+  }
+  .search-field input[type="text"]:focus{ border-color: var(--indigo); }
+  .clear-btn{
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    width: 26px; height: 26px; border-radius: 50%;
+    border: none; background: var(--line); color: var(--ink-soft);
+    font-size: 14px; line-height: 1; cursor: pointer;
+    display: none; align-items: center; justify-content: center;
+  }
+  .clear-btn.show{ display: flex; }
+  .clear-btn:hover{ background: #c9c0a9; }
+
+  .quick-tags{ display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .quick-tag{
+    border: 1px solid var(--line);
+    background: #f4f1e8;
+    color: var(--ink-soft);
+    font-size: 12px;
+    padding: 5px 11px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .quick-tag:hover{ background: var(--indigo); color: #f4efe3; border-color: var(--indigo); }
+  .quick-tag.active{ background: var(--shu); color: #fff; border-color: var(--shu); }
+
+  /* ===== Season tabs ===== */
+  .tabs{
+    display: flex;
+    background-color: #ded6c1;
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 6px;
+    gap: 2px;
+  }
+  .tab-btn{
+    flex: 1;
+    background: none; border: none;
+    padding: 10px 6px;
+    font-size: 14px; font-weight: 700;
+    color: var(--ink-soft);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .tab-btn.active{ background-color: var(--paper); color: var(--indigo); box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
+
+  .result-count{
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    text-align: right;
+    margin: 8px 4px 14px;
+  }
+  .result-count b{ color: var(--indigo); }
+
+  /* ===== Cards ===== */
+  .card-list{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 14px;
+  }
+  .card{
+    background-color: var(--paper);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--indigo);
+    padding: 16px 17px;
+    border-radius: 8px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    display: flex;
+    flex-direction: column;
+  }
+  .card:hover{ transform: translateY(-3px); box-shadow: 0 8px 18px rgba(23,40,59,0.10); }
+  .card.hidden{ display: none; }
+
+  .season-badge{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 9px;
+    width: fit-content;
+    letter-spacing: 0.5px;
+  }
+  .badge-spring{ background-color: var(--spring); }
+  .badge-summer{ background-color: var(--summer); }
+  .badge-autumn{ background-color: var(--autumn); }
+  .badge-winter{ background-color: var(--winter); }
+  .badge-all{ background-color: var(--allseason); }
+
+  .card-title{ margin: 0 0 8px 0; font-size: 16px; font-weight: 700; font-family: 'Shippori Mincho', serif; }
+  .card-title a{ color: var(--indigo); text-decoration: none; }
+  .card-title a:hover{ text-decoration: underline; color: var(--shu); }
+
+  .card-meta{ font-size: 13px; color: var(--ink-soft); margin-bottom: 10px; flex-grow: 1; }
+  .card-tags{ margin-top: auto; }
+  .tag{
+    display: inline-block;
+    background-color: #f0ece1;
+    color: var(--ink-soft);
+    padding: 2px 9px;
+    font-size: 11.5px;
+    border-radius: 4px;
+    margin: 0 5px 5px 0;
+  }
+
+  footer{ text-align: center; margin-top: 26px; font-size: 12px; color: var(--ink-soft); padding: 10px; }
+
+  .no-results{
+    text-align: center;
+    padding: 34px 20px;
+    color: var(--ink-soft);
+    background-color: var(--paper);
+    border: 1px dashed var(--line);
+    border-radius: 8px;
+    display: none;
+    grid-column: 1 / -1;
+  }
+  .no-results strong{ display:block; color: var(--indigo); font-size: 15px; margin-bottom: 4px; }
+
+  @media (max-width: 480px){
+    header h1{ font-size: 21px; }
+    .hanko{ width: 50px; height: 50px; font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="header-row">
+      <div>
+        <h1>笠原流 旬のレシピ検索帳</h1>
+        <p>【賛否両論】笠原将弘の料理のほそ道 厳選動画まとめ</p>
+      </div>
+      <div class="hanko" id="hanko-stamp">全</div>
+    </div>
+  </header>
+
+  <div class="search-box">
+    <label for="material-search">材料・キーワードで検索</label>
+    <div class="search-field">
+      <input type="text" id="material-search" placeholder="例: ブリ、大根、じゃがいも、鶏肉..." oninput="filterRecipes()" autocomplete="off">
+      <button type="button" class="clear-btn" id="clear-btn" onclick="clearSearch()" aria-label="検索をクリア">✕</button>
+    </div>
+    <div class="quick-tags" id="quick-tags"><!-- JSで自動生成 --></div>
+  </div>
+
+  <div class="tabs" id="season-tabs">
+    <button class="tab-btn active" data-season="all">全て</button>
+    <button class="tab-btn" data-season="spring">春</button>
+    <button class="tab-btn" data-season="summer">夏</button>
+    <button class="tab-btn" data-season="autumn">秋</button>
+    <button class="tab-btn" data-season="winter">冬</button>
+  </div>
+
+  <div class="result-count" id="result-count"></div>
+
+  <div class="card-list" id="recipe-list"><!-- JSで自動生成 --></div>
+
+  <div class="no-results" id="no-results">
+    <strong>該当するレシピが見つかりませんでした</strong>
+    別のキーワードや季節タブをお試しください。
+  </div>
+
+  <footer>
+    <p>※LINEで共有された方は、このまま画面上で材料検索や動画へのジャンプが可能です。</p>
+  </footer>
+</div>
+
+<script>
+  /* ============================================================
+     レシピデータ … ここに配列で追加するだけでカードが増えます。
+     season: 'spring' | 'summer' | 'autumn' | 'winter' | 'all'
+     materials: 検索対象になるキーワード配列（表記ゆれも入れる）
+     tags: カード下部に表示するタグ（材料名など）
+     Convert-CsvToRecipeHtml.ps1 が下のマーカー区間を自動で書き換えます。
+     手動で追加する場合もこの区間内に追記してください。
+     ============================================================ */
+  // ===RECIPES_START===
+  const recipes = [
+    {
+      season: 'summer',
+      title: '夏の常備菜はこれ！笠原流【無限きゅうり大葉漬け】',
+      url: 'https://www.youtube.com/watch?v=-pXH76WSmJQ',
+      desc: '今回は、夏にぴったりの常備菜「無限きゅうり大葉漬け」をご紹介！ ポリポリ食感と大葉の爽やかな香りで、箸が止まらないやみつきの美味しさです。 ご飯のお供にも、お酒…',
+      materials: ['きゅうり', 'キュウリ', '胡瓜', '大葉', 'しそ', '紫蘇', '常備菜', '作り置き'],
+      tags: ['きゅうり', '大葉', '常備菜']
+    },
+    {
+      season: 'summer',
+      title: '料理人の休日BBQ！プロが作る絶品アウトドア料理',
+      url: 'https://www.youtube.com/watch?v=nHlBBND9nog',
+      desc: '料理人が本気で楽しむバーベキュー！ ただ焼くだけでは終わらない、プロならではの技とアイデアで絶品料理を次々と披露します。 普段とはひと味違う、料理人たちの休日の…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'summer',
+      title: 'レタス農家出身の弟子が挑戦！笠原と本気のまかない対決',
+      url: 'https://www.youtube.com/watch?v=u1hCf8NwVw4',
+      desc: 'レタス農家出身の5年目の弟子が、師匠・笠原将弘に本気のまかない料理対決を挑みます！ 旬のレタスを使って、それぞれがアイデアを凝らした一皿を披露！  ↓チャンネル…',
+      materials: ['レタス'],
+      tags: ['レタス']
+    },
+    {
+      season: 'summer',
+      title: '笠原流【玉子豆腐】プロが教える！なめらかに仕上げる極意',
+      url: 'https://www.youtube.com/watch?v=Z7skLo2ULuE',
+      desc: '今回は、笠原流【玉子豆腐】をご紹介！ だしの風味をきかせた、なめらかで口どけの良い本格和食の一品です。 家庭でも料亭のような味わいに仕上げるコツを、笠原が伝授し…',
+      materials: ['卵', 'たまご', '玉子', 'オムレツ', 'だし巻き', '茶碗蒸し', 'かに玉', '天津', '豆腐', 'とうふ', '厚揚げ', '油揚げ'],
+      tags: ['卵', '豆腐']
+    },
+    {
+      season: 'summer',
+      title: '笠原流【ステーキ】お手頃な肉が驚くほどやわらかくなる極意',
+      url: 'https://www.youtube.com/watch?v=wGWT3nVJmTs',
+      desc: '今回は、笠原流【ステーキ】をご紹介！ お手頃なお肉でも驚くほどやわらかく仕上げる、プロの焼き方と美味しくする極意を伝授します。 家庭のステーキがワンランクアップ…',
+      materials: ['牛', 'ビーフ', 'すき焼き', 'ステーキ', 'ハンバーグ', 'ローストビーフ'],
+      tags: ['牛肉']
+    },
+    {
+      season: 'summer',
+      title: '忙しい朝でも間に合う！大体15分で作れる笠原流【生姜焼き弁当】',
+      url: 'https://www.youtube.com/watch?v=ZcjNjw8suIc',
+      desc: '今回は、忙しい朝でも作れる笠原流【生姜焼き弁当】をご紹介！ 大体15分で作れるのに、冷めても美味しい本格的な味わいに仕上げます。 毎日のお弁当作りに役立つ、簡単…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚', '弁当'],
+      tags: ['豚肉', '弁当']
+    },
+    {
+      season: 'summer',
+      title: '味噌汁が劇的に変わる！笠原流【煮干しだし】の極意',
+      url: 'https://www.youtube.com/watch?v=xy8Sq8NBckA',
+      desc: '煮干しの香りとうま味を引き出した、笠原流「煮干しだしの味噌汁」をご紹介！いつもの味噌汁がワンランク上の味になる、プロならではのだしの取り方を丁寧に解説します。 …',
+      materials: ['味噌汁', 'みそ汁', '豚汁', 'スープ', 'お吸い物', 'けんちん', 'だし', '出汁', '煮干し'],
+      tags: ['味噌汁・汁物', 'だし']
+    },
+    {
+      season: 'summer',
+      title: '旬の夏ナスで作る絶品和食！笠原流【ナスのたたき】',
+      url: 'https://www.youtube.com/watch?v=sSMecH2HKjs',
+      desc: '夏に食べたい絶品和食！旬のナスを使った笠原流【ナスのたたき】を教えます。 焼いたナスの香ばしさと特製ポン酢のうま味がたまらない、ご飯にもお酒にも合う一品です。 …',
+      materials: ['なす', 'ナス', '茄子'],
+      tags: ['なす']
+    },
+    {
+      season: 'summer',
+      title: '【後編】個性爆発！一流料理人4人の料理が予想外の結末に',
+      url: 'https://www.youtube.com/watch?v=5cNvpOCkeRA',
+      desc: '3周年記念企画「5000円でドーン！」後編！ 一流料理人4人が、5,000円分の食材をすべて使い切るまで終われない企画に挑戦！個性あふれる料理が次々と完成する中…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'summer',
+      title: '一流料理人4人が集結！5,000円分の食材で何を作る？',
+      url: 'https://www.youtube.com/watch?v=ugd72u3yGqI',
+      desc: 'チャンネル開設3周年を記念して、一流料理人4人が集結！ 予算は5,000円分の食材のみ。限られた予算の中で、それぞれの料理人がどんな食材を選び、どんな料理を作る…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '和食のプロ・笠原、ラーメンを本気で作る。',
+      url: 'https://www.youtube.com/watch?v=kSgKmcf0y-o',
+      desc: '今回は、“ちょっと本気”で醤油ラーメン作りに挑戦！ だしの技術をつぎ込んだスープに、細部までこだわった渾身の一杯が完成しました。  ↓チャンネル登録はこちらから…',
+      materials: ['うどん', 'そば', '蕎麦', 'ラーメン', 'らーめん', 'パスタ', 'スパゲ', '焼きそば', 'そうめん', 'にゅうめん', 'タンメン', '冷やし中華'],
+      tags: ['麺類']
+    },
+    {
+      season: 'spring',
+      title: '豚こまで作る笠原流【ぶたから】安い肉がごちそうになる！',
+      url: 'https://www.youtube.com/watch?v=_crYaJS8e5c',
+      desc: '今回は、豚こま肉で作る笠原流【ぶたから】をご紹介！ 安いお肉でもカリッとジューシー、ご飯もお酒も止まらない絶品おかずに仕上げます。  ↓チャンネル登録はこちらか…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚'],
+      tags: ['豚肉']
+    },
+    {
+      season: 'spring',
+      title: '昭和の喫茶店の味！懐かしの【ドライカレー】を笠原流で',
+      url: 'https://www.youtube.com/watch?v=LBScmO8_CMs',
+      desc: '今回は、昭和の喫茶店で愛された懐かしの【ドライカレー】をご紹介！ シンプルなのにクセになる、どこかホッとする昔ながらの味わいです。   ↓チャンネル登録はこちら…',
+      materials: ['イカ', 'いか', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['イカ', '米・ご飯']
+    },
+    {
+      season: 'spring',
+      title: '江戸時代の豆腐料理【かみなり豆腐】を笠原が再現！',
+      url: 'https://www.youtube.com/watch?v=3fGNSMPTn-c',
+      desc: '江戸時代から親しまれてきた豆腐料理【かみなり豆腐】を、笠原流にアレンジ！シンプルな材料なのに、ご飯もお酒も止まらなくなる昔ながらの絶品おかずです。  ↓チャンネ…',
+      materials: ['豆腐', 'とうふ', '厚揚げ', '油揚げ'],
+      tags: ['豆腐']
+    },
+    {
+      season: 'spring',
+      title: '笠原流【ガパオライス】バジルの代わりは“あの和食材”',
+      url: 'https://www.youtube.com/watch?v=q-87tO_DHVo',
+      desc: '今回は、バジルの代わりに“大葉”を使った笠原流【ガパオライス】をご紹介！和の香りが相性抜群で、ご飯が止まらなくなる絶品アレンジです。 フライパン1つで簡単に作れ…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '和食vs中華プロが激突！「サッポロ一番」アレンジ対決 第2弾',
+      url: 'https://www.youtube.com/watch?v=rtY7uYmNBJU',
+      desc: '我らが和食の笠原将弘と中華の達人・菰田欣也シェフが 「サッポロ一番」を使ってアレンジ対決 第2弾！ 果たしてどんな一品ができるのか、乞うご期待！  ↓YouTu…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '金沢の台所『近江町市場』で食材探し！笠原流ごちそう和食',
+      url: 'https://www.youtube.com/watch?v=5hfHe1ZPJWg',
+      desc: '今回は金沢の台所「近江町市場」へ！ 笠原将弘が旬の魚介や地元食材を探しながら、市場ならではの楽しみ方をご紹介します！金沢の食材で作る笠原流ごちそう和食、ぜひ最後…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '永久保存版！感動レベルでウマい 菰田シェフ直伝【春巻き】',
+      url: 'https://www.youtube.com/watch?v=-k9JqFaYVnU',
+      desc: '中華の達人 菰田欣也シェフに教わる、感動レベルでウマい【春巻き】 パリッとした食感とジューシーな具材に仕上げるプロの技を丁寧に解説します。家庭でも再現できる永久…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '笠原流【ちらし寿司】子供が喜ぶ簡単ごちそう',
+      url: 'https://www.youtube.com/watch?v=yF1_0ylSk8A',
+      desc: '子供が喜ぶ笠原流【こどもの日 ちらし寿司】をご紹介！ 簡単に作れるのに華やかで、ごちそう感たっぷりの一皿に仕上がります。 お祝いや普段の食卓にもぴったり、ぜひご…',
+      materials: ['ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['米・ご飯']
+    },
+    {
+      season: 'spring',
+      title: 'ご飯が止まらない！笠原流【豚バラ肉豆腐】定食屋の味を再現',
+      url: 'https://www.youtube.com/watch?v=ugbeRJBhA58',
+      desc: 'ご飯が止まらない！笠原流【豚バラ肉豆腐】で定食屋の味を再現します。 シンプルな材料で作れるのに、コクとうま味を引き出すプロのコツを伝授！ おかずにもおつまみにも…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚', '豆腐', 'とうふ', '厚揚げ', '油揚げ', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['豚肉', '豆腐', '米・ご飯']
+    },
+    {
+      season: 'spring',
+      title: 'プロ直伝！笠原流【ポテサラアレンジ2品】ひと手間でごちそうに',
+      url: 'https://www.youtube.com/watch?v=uCznxts-lKo',
+      desc: '余り物やお惣菜を使った笠原流【ポテサラアレンジ2品】をご紹介！ ひと手間加えるだけで、ごちそうに変わるプロのアイデアを伝授します。 簡単で満足感たっぷりのアレン…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: 'コンソメは使わない！笠原流【和風ポトフ】の作り方',
+      url: 'https://www.youtube.com/watch?v=4vAIVfHZpb4',
+      desc: 'コンソメを使わず、豚肉と野菜のだしで仕上げる笠原流【和風ポトフ】をご紹介！素材のうま味を引き出すシンプルな作り方とプロのコツを伝授します。やさしい味わいで体に染…',
+      materials: ['鍋', 'しゃぶ', 'おでん', 'ポトフ', 'すき焼き'],
+      tags: ['鍋']
+    },
+    {
+      season: 'spring',
+      title: '超簡単！笠原流【サーモンのホイル焼き】包んで焼くだけで絶品に',
+      url: 'https://www.youtube.com/watch?v=1aFZIKnx9IM',
+      desc: '超簡単に作れる笠原流「サーモンのホイル焼き」をご紹介！ 包んで焼くだけなのに、しっとり仕上がるプロのコツを伝授します。 忙しい日にもぴったりな絶品おかず、ぜひご…',
+      materials: ['鮭', 'サーモン'],
+      tags: ['鮭']
+    },
+    {
+      season: 'spring',
+      title: '料理人歴6年vs35年の茶碗蒸し対決【キオくん卒業試験②】',
+      url: 'https://www.youtube.com/watch?v=_0-jVJwbwqk',
+      desc: 'キオくん卒業試験第2弾！ 料理人歴6年のキオくんが、35年の笠原マスターに本気の茶碗蒸し対決を挑みます。 果たしてキオくんは合格できるのか…ぜひ最後までご覧くだ…',
+      materials: ['卵', 'たまご', '玉子', 'オムレツ', 'だし巻き', '茶碗蒸し', 'かに玉', '天津'],
+      tags: ['卵']
+    },
+    {
+      season: 'spring',
+      title: 'プロが教える！笠原流【がんもどき】外カリ中ふわに仕上げる極意',
+      url: 'https://www.youtube.com/watch?v=fKfFRO7TICg',
+      desc: '外はカリッと中はふわっと仕上げる、笠原流がんもどきの極意を徹底解説！ 家庭でも失敗しないコツや、プロならではのひと手間を分かりやすく紹介します。おかずにもおつま…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '【キオくん卒業試験①】油揚げで若手と本気のおつまみ対決',
+      url: 'https://www.youtube.com/watch?v=SpQHSeh7mV0',
+      desc: '6年目になるキオくんが、もうすぐ「賛否両論」を卒業。 若手と油揚げを使った本気のおつまみ対決に挑みます！ 家庭でもマネできるアイデア満載なので、ぜひ最後までご覧…',
+      materials: ['豆腐', 'とうふ', '厚揚げ', '油揚げ'],
+      tags: ['豆腐']
+    },
+    {
+      season: 'spring',
+      title: '笠原流【鶏のニンニク焼き】ビールが止まらない！香川名物“骨付鳥”を再現',
+      url: 'https://www.youtube.com/watch?v=k1aEGQ639aw',
+      desc: '香川名物“骨付鳥”をオマージュした、ガツンとウマい鶏のニンニク焼き！ 外はカリッと中はジューシー、ニンニクのパンチでビールが止まらない一皿です。家庭で簡単に再現…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'spring',
+      title: '笠原流【ミートソーススパゲッティ】懐かしの昭和の味を完全再現',
+      url: 'https://www.youtube.com/watch?v=k58a7fzI194',
+      desc: '子供の頃に食べた懐かしの“あの味”を、笠原流で完全再現！ 特別な材料なしで、コク深くどこかホッとするミートソースに仕上げます。 一度作ればもう市販には戻れない、…',
+      materials: ['うどん', 'そば', '蕎麦', 'ラーメン', 'らーめん', 'パスタ', 'スパゲ', '焼きそば', 'そうめん', 'にゅうめん', 'タンメン', '冷やし中華'],
+      tags: ['麺類']
+    },
+    {
+      season: 'spring',
+      title: '笠原流【黒コショウレモン唐揚げ】レモンでさっぱり！',
+      url: 'https://www.youtube.com/watch?v=M34gDpdmTjo',
+      desc: '「コークを飲んでトリ皿 絶対もらえる！キャンペーン」の詳細はこちら↓ https://lsp-campaign.com/coke-receiptcp-toriz…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'spring',
+      title: '笠原流【黒コショウレモン唐揚げ】レモンでさっぱり！やみつき唐揚げ',
+      url: 'https://www.youtube.com/watch?v=-umEAP0oUjo',
+      desc: 'コカ・コーラにぴったりの笠原流「黒コショウレモン唐揚げ」 黒コショウのパンチとレモンのさっぱり感がクセになる味わい！ 一度食べたら、やみつきになること間違いなし…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'spring',
+      title: 'スーパーの食材1000円で3品完成！プロの本気料理がすごすぎた',
+      url: 'https://www.youtube.com/watch?v=kUdqgNUtHYQ',
+      desc: 'スーパーの食材1000円で、主菜・副菜・汁物の3品に挑戦！ プロ料理人・笠原将弘 が 「オオゼキ」 でリアルに買い物して本気調理！ 限られた予算でどこまで美味し…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '笠原流【お花見弁当】簡単なのに豪華すぎる春弁当',
+      url: 'https://www.youtube.com/watch?v=MvV15osJHmo',
+      desc: '簡単に作れて華やかな春のお弁当。 手軽に作れるおかずと彩りよく仕上げるコツをご紹介します。 お花見やピクニックにぴったりなのでぜひ作ってみてください。  ↓チャ…',
+      materials: ['弁当'],
+      tags: ['弁当']
+    },
+    {
+      season: 'spring',
+      title: '笠原流【春の天ぷら盛り合わせ】サクサクに揚げるコツ',
+      url: 'https://www.youtube.com/watch?v=0G8iT21z2Cc',
+      desc: '旬の食材で作る笠原流「春の天ぷら盛り合わせ」 サクサクに揚げるコツをプロの技でわかりやすく解説します。 余った天ぷらで作る美味しい締めの一品もご紹介します。  …',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '笠原流【クラムチャウダー】プロが教える本当にウマい作り方',
+      url: 'https://www.youtube.com/watch?v=qdQr2o6QQLY',
+      desc: '家庭にある調味料で簡単に作れる「クラムチャウダー」をご紹介！ アサリとベーコンのうま味がぎゅっと詰まったクリーミースープ。 寒い日にぴったりの一品です！  ↓チ…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: 'お茶漬け最強レシピ決定戦【お茶漬け-1グランプリ】in 名古屋',
+      url: 'https://www.youtube.com/watch?v=oLsVnHerSkY',
+      desc: '「賛否両論 名古屋」からお届けする特別企画！ 料理人たちが“最強のお茶漬け”をテーマに本気のレシピ対決！  ↓チャンネル登録はこちらから↓※毎週 水曜・土曜の1…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '名古屋名物【味噌カツ】一生使える味噌だれを笠原が伝授！',
+      url: 'https://www.youtube.com/watch?v=CFGUZEmdMxU',
+      desc: '「賛否両論 名古屋店」から、名古屋名物【味噌カツ】をご紹介！ 家庭でも一生使える“本格味噌だれ”を、料理人・笠原将弘がわかりやすく伝授します。甘辛濃厚な味わいで…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'winter',
+      title: '甘辛ダレが決め手！家で作れる本格レシピ【名古屋風 手羽先の唐揚げ】',
+      url: 'https://www.youtube.com/watch?v=kKn0AXrR0uk',
+      desc: '今回は「賛否両論 名古屋店」から、名古屋名物「手羽先の唐揚げ」をご紹介！外はパリッと、中はジューシー。甘辛ダレがあと引く美味しさです。 ご飯にもお酒にも合う一品…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'winter',
+      title: '意外と簡単！カブのやさしい甘さが広がる【かぶら蒸し】の作り方',
+      url: 'https://www.youtube.com/watch?v=QWQ91Kh0d7M',
+      desc: '日本料理の定番、冬が旬のカブを使った「かぶら蒸し」。 料亭で味わうようなやさしい味わいを、家庭で手軽に作れます。 ぜひ一度、試してみてください。  ↓チャンネル…',
+      materials: ['かぶ', 'カブ', '蕪'],
+      tags: ['かぶ']
+    },
+    {
+      season: 'winter',
+      title: '忘れられない感動の味！佐藤シェフに【牡蠣の南蛮漬け】を教えてもらった',
+      url: 'https://www.youtube.com/watch?v=qoRIlHzG6UA',
+      desc: '今回は東京・白金高輪にある「縁日（えんか）」の店主・佐藤雄一シェフがゲスト来店！ 笠原がお店に食べに行って感動したという「牡蠣の南蛮漬け」を特別に教えてもらいま…',
+      materials: ['牡蠣', 'カキ', 'かき'],
+      tags: ['牡蠣']
+    },
+    {
+      season: 'winter',
+      title: '使う食材はレモンとレタスだけ！笠原流【レモンレタスサラダ】',
+      url: 'https://www.youtube.com/watch?v=gmTkWuJHMhU',
+      desc: 'かつてイギリスの料理研究家から教えてもらったという 「レモンレタスサラダ」を披露！ レモンの爽やかさに、はちみつの甘さを加えた病みつきの味わいに レタスが無限に…',
+      materials: ['レタス'],
+      tags: ['レタス']
+    },
+    {
+      season: 'winter',
+      title: '料理人歴2年と35年が【鶏の唐揚げ】を作ってみた結果',
+      url: 'https://www.youtube.com/watch?v=yQX5KuLjPkM',
+      desc: '料理歴2年のナナコさんと料理歴35年の笠原将弘が「鶏の唐揚げ」を作ってみて、どんな違いがあるのか検証してみました！  ↓チャンネル登録はこちらから↓※毎週 水曜…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'spring',
+      title: '和食のプロが作る万能常備菜！笠原流【ふきのとう味噌】の作り方',
+      url: 'https://www.youtube.com/watch?v=kOjD-GoZX70',
+      desc: '春の訪れを告げる「ふきのとう」を使った 万能常備菜「ふきのとう味噌」の作り方を教えます。 ご飯にのせたり、厚揚げや新鮮な野菜につけて食べると絶品です！ 2週間以…',
+      materials: ['常備菜', '作り置き'],
+      tags: ['常備菜']
+    },
+    {
+      season: 'winter',
+      title: '和食と寿司のプロが「パスタ」でまかない対決してみた',
+      url: 'https://www.youtube.com/watch?v=zMHojVI_yfw',
+      desc: '恵比寿に店を構える「鮨屋小野」の店主・小野淳平さんをゲストに呼んで 「まかない合戦」を開催！ テーマ食材は「パスタ」一体どんなまかないが出来上がるのか！？  ↓…',
+      materials: ['ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ', 'うどん', 'そば', '蕎麦', 'ラーメン', 'らーめん', 'パスタ', 'スパゲ', '焼きそば', 'そうめん', 'にゅうめん', 'タンメン', '冷やし中華'],
+      tags: ['米・ご飯', '麺類']
+    },
+    {
+      season: 'winter',
+      title: '家庭で簡単に作れる！笠原流【和風トリュフチョコ】でバレンタインは決まり！',
+      url: 'https://www.youtube.com/watch?v=L7yVdqJmcB0',
+      desc: 'もうすぐバレンタインデー！ ということで今回は、笠原流の「和風トリュフチョコ」 手順も簡単で、あっという間にできるのでぜひお試しください！  ↓チャンネル登録は…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'winter',
+      title: '【節約お弁当】大体15分で作れちゃう！笠原流【のり弁当】',
+      url: 'https://www.youtube.com/watch?v=aeNRAIIhSA0',
+      desc: '大好評の「大体15分弁当」第3弾！ 今回は、1人前の材料費100円ほどでできちゃう「のり弁当」をご紹介！ 調理中は完全ノーカットでお届けします！  ↓チャンネル…',
+      materials: ['弁当'],
+      tags: ['弁当']
+    },
+    {
+      season: 'winter',
+      title: '白菜を美味しく食べるならコレ！笠原流【白菜のうま煮】の作り方',
+      url: 'https://www.youtube.com/watch?v=De-SQINXGvw',
+      desc: 'お鍋で余った白菜を大量消費できる「白菜のうま煮」をご紹介！ 豚バラと春雨を使ってボリューム感もあり ご飯のおかずにもお酒のおつまみにも最高の一品です！  ↓チャ…',
+      materials: ['白菜', 'はくさい'],
+      tags: ['白菜']
+    },
+    {
+      season: 'winter',
+      title: '【完全保存版】プロの寿司職人が教える！誰でも簡単に作れる【恵方巻き】',
+      url: 'https://www.youtube.com/watch?v=BU9uroja38Q',
+      desc: '来たる2月3日は節分ということで 寿司屋の小野さんをゲストに呼んで「恵方巻き」の作り方を教わりました。 スーパーで手に入る食材で簡単に作れるので、ぜひお試しあれ…',
+      materials: ['ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['米・ご飯']
+    },
+    {
+      season: 'winter',
+      title: '家庭で簡単に作れる保存食！笠原流【牡蠣と鶏レバーのオイル漬け】',
+      url: 'https://www.youtube.com/watch?v=ct7X2dswI70',
+      desc: 'ちょっとしたおつまみに最高な 牡蠣と鶏レバーを使った「オイル漬け」をご紹介！ 冷蔵庫で保管すれば１０日間は楽しめます。  ↓チャンネル登録はこちらから↓※毎週 …',
+      materials: ['牡蠣', 'カキ', 'かき', '鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['牡蠣', '鶏肉']
+    },
+    {
+      season: 'winter',
+      title: '和食のプロ直伝！こんにゃくと大根の【味噌田楽】でお酒が止まらない！',
+      url: 'https://www.youtube.com/watch?v=b1Fv12r9be8',
+      desc: '最近、笠原マスターがお酒のおつまみにハマっているという 「味噌田楽」の作り方をご紹介！ じっくり煮込んだ大根とプリプリのこんにゃくに甘辛みそが相性抜群！  ↓チ…',
+      materials: ['大根', 'だいこん', 'おでん'],
+      tags: ['大根']
+    },
+    {
+      season: 'winter',
+      title: '和食のプロが教える！笠原流【ブリしゃぶ】が一度食べたらやめられない！',
+      url: 'https://www.youtube.com/watch?v=t0vzHcC2y-Q',
+      desc: '家族みんなで楽しめる「ブリしゃぶ」をご紹介！ 自家製ポン酢、ごま油とわさびを合わせた特製ダレは必見です！  ↓チャンネル登録はこちらから↓※毎週 水曜・土曜の１…',
+      materials: ['ブリ', 'ぶり', '鰤', 'タラ', 'たら', '鱈', '鍋', 'しゃぶ', 'おでん', 'ポトフ', 'すき焼き'],
+      tags: ['ブリ', 'タラ', '鍋']
+    },
+    {
+      season: 'winter',
+      title: 'じっくり煮込んでトロットロ！笠原流【牛すじ煮】の作り方',
+      url: 'https://www.youtube.com/watch?v=jExwBNa6mTE',
+      desc: '笠原流の「牛すじ煮込み」をご紹介。 煮込む時間はかかるけど、その分美味しさは間違いなし！ お時間がある時に、ぜひお試しください！  ↓チャンネル登録はこちらから…',
+      materials: ['牛', 'ビーフ', 'すき焼き', 'ステーキ', 'ハンバーグ', 'ローストビーフ'],
+      tags: ['牛肉']
+    },
+    {
+      season: 'winter',
+      title: '寒い季節に食べたい！笠原流【粕汁】で心も体もぽっかぽか！',
+      url: 'https://www.youtube.com/watch?v=xmXNNeZ8pOU',
+      desc: '酒粕を使った王道「粕汁」の作り方をご紹介！ 寒い季節にはぴったりの一品なので、覚えておいて損なし！  ↓チャンネル登録はこちらから↓※毎週 水曜・土曜の１９時か…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'winter',
+      title: '手に入りやすい三草で作る！笠原流【七草がゆ】',
+      url: 'https://www.youtube.com/watch?v=vgYxY5GYtC0',
+      desc: '1月7日の「人日の節句」に食べる七草がゆを作りやすくアレンジ！ 年末年始で食べすぎ・飲みすぎた体を、これで労わってみてはいかが？  ↓チャンネル登録はこちらから…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'winter',
+      title: '本格的なだしで贅沢に！笠原流【天ぷらそば】の作り方',
+      url: 'https://www.youtube.com/watch?v=n3Kfm5an7KE',
+      desc: '年越しぐらいは贅沢なだしを取って、本格的なおそばがいかが？ 天ぷらの揚げ方のコツも教えちゃいます。 年越しそばはこれで決まり！  ↓チャンネル登録はこちらから↓…',
+      materials: ['うどん', 'そば', '蕎麦', 'ラーメン', 'らーめん', 'パスタ', 'スパゲ', '焼きそば', 'そうめん', 'にゅうめん', 'タンメン', '冷やし中華', 'だし', '出汁', '煮干し'],
+      tags: ['麺類', 'だし']
+    },
+    {
+      season: 'winter',
+      title: '小豆の炊き方から丁寧に解説！笠原流【ぜんざい】の作り方',
+      url: 'https://www.youtube.com/watch?v=yG7O6TEiYDA',
+      desc: '今回は、お正月には食べたい「ぜんざい」 甘すぎず薄すぎないちょうどいい味わいは、覚えておくと一生物です！  ↓チャンネル登録はこちらから↓※毎週 水曜・土曜の１…',
+      materials: ['プリン', 'スイートポテト', 'ぜんざい', 'おしるこ', 'わらび餅', 'アイス', 'ケーキ'],
+      tags: ['デザート']
+    },
+    {
+      season: 'winter',
+      title: '和食VSフレンチ！笠原とジョージが【鶏鍋】でまかない対決！',
+      url: 'https://www.youtube.com/watch?v=j8-jfFORPWM',
+      desc: '大好評のまかない合戦！ 今回の対戦相手は、フレンチのジョージシェフ！ テーマは「鶏を使ったお鍋」一体どんな鍋が誕生するのか！？  ↓「George ジョージ吉田…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', '鍋', 'しゃぶ', 'おでん', 'ポトフ', 'すき焼き'],
+      tags: ['鶏肉', '鍋']
+    },
+    {
+      season: 'winter',
+      title: 'プロが教える「わさび」の美味しい食べ方！笠原流【鳥わさ鍋・本わさび丼】',
+      url: 'https://www.youtube.com/watch?v=I7yEChaK5-4',
+      desc: 'エスビー食品の「本生本わさび」を使って家族で楽しめるご馳走を2品ご紹介！ 1品目は鶏むね肉を使ってわさびをたっぷりときかせた「鳥わさ鍋」 2品目は牛肉を使った贅…',
+      materials: ['ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ', '鍋', 'しゃぶ', 'おでん', 'ポトフ', 'すき焼き'],
+      tags: ['米・ご飯', '鍋']
+    },
+    {
+      season: 'winter',
+      title: 'フレンチのジョージシェフに本格&簡単【ビーフシチュー】を教わった',
+      url: 'https://www.youtube.com/watch?v=7MVlPMrUcHU',
+      desc: '今回はフレンチシェフであり、YouTube登録者130万人以上の 「George ジョージ吉田」さんを迎えてのコラボ回！ クリスマスにもぴったりの「ビーフシチュ…',
+      materials: ['牛', 'ビーフ', 'すき焼き', 'ステーキ', 'ハンバーグ', 'ローストビーフ'],
+      tags: ['牛肉']
+    },
+    {
+      season: 'winter',
+      title: '丸美屋「麻婆豆腐の素」をアレンジ！笠原流【まぼじゃが】',
+      url: 'https://www.youtube.com/watch?v=SJo7kT0svLg',
+      desc: '',
+      materials: ['ひき肉', '挽き肉', 'ミンチ', 'そぼろ', 'つくね', 'ミートボール', '餃子', 'ぎょうざ', 'メンチ', '麻婆', '豆腐', 'とうふ', '厚揚げ', '油揚げ'],
+      tags: ['ひき肉', '豆腐']
+    },
+    {
+      season: 'winter',
+      title: '【麻婆豆腐の素】を使ってアレンジ料理対決！弟子とまかない合戦',
+      url: 'https://www.youtube.com/watch?v=23kEHW7PSC4',
+      desc: '大好評のまかない合戦！ 今回のテーマは、丸美屋「麻婆豆腐の素」のアレンジレシピ！  ↓「料理のほそ道」チャンネル登録はこちらから↓※毎週 水曜・土曜の１９時から…',
+      materials: ['ひき肉', '挽き肉', 'ミンチ', 'そぼろ', 'つくね', 'ミートボール', '餃子', 'ぎょうざ', 'メンチ', '麻婆', '豆腐', 'とうふ', '厚揚げ', '油揚げ'],
+      tags: ['ひき肉', '豆腐']
+    },
+    {
+      season: 'winter',
+      title: '【完全保存版】プロが教えるお刺身の切り方&盛り付けテクニック',
+      url: 'https://www.youtube.com/watch?v=ko_-jzW6Jh0',
+      desc: 'スーパーでも買える鯛・マグロの柵を まるでお店で出てくるように仕上げるワザを笠原が丁寧に解説！ これを覚えておけば一生ものです！  ↓チャンネル登録はこちらから…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'autumn',
+      title: '鶏肉の達人が教える！ふわふわ＆食べ応え抜群【チキンハンバーグ】',
+      url: 'https://www.youtube.com/watch?v=76yiKh87BbU',
+      desc: 'クリスマスなど特別な日にオススメ！ 鶏肉を使ったヘルシーなのに食べ応えは抜群！ 大人も子供も大喜びの一品です。  ↓チャンネル登録はこちらから↓※毎週 水曜・土…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', '牛', 'ビーフ', 'すき焼き', 'ステーキ', 'ハンバーグ', 'ローストビーフ'],
+      tags: ['鶏肉', '牛肉']
+    },
+    {
+      season: 'autumn',
+      title: 'おばあちゃんが作ってくれた思い出の【にんじんかき揚げ】を再現してみた',
+      url: 'https://www.youtube.com/watch?v=i2-HPK3AF3Q',
+      desc: 'にんじん嫌いだった笠原少年のために おばあちゃんが作ってくれた「にんじんかき揚げ」を再現。 にんじんのシンプルな味わいが楽しめるオススメの一品です！  「料理の…',
+      materials: ['牡蠣', 'カキ', 'かき', '人参', 'にんじん', 'ニンジン'],
+      tags: ['牡蠣', '人参']
+    },
+    {
+      season: 'winter',
+      title: '【豆腐】で若手とまかない対決！寒い冬にぴったりな絶品レシピ誕生！',
+      url: 'https://www.youtube.com/watch?v=rRtDmGTul0c',
+      desc: '大好評の「まかない合戦」が再び開幕！ 今回のテーマ食材は「豆腐」 一体どんなまかない料理が誕生するのか！？  ↓チャンネル登録はこちらから↓※毎週 水曜・土曜の…',
+      materials: ['豆腐', 'とうふ', '厚揚げ', '油揚げ'],
+      tags: ['豆腐']
+    },
+    {
+      season: 'winter',
+      title: '自家製だと一味違う！お鍋の季節に大活躍の【柚子胡椒】',
+      url: 'https://www.youtube.com/watch?v=SaL_XRGdhHI',
+      desc: '「賛否両論」でも毎年作っている「柚子胡椒」の作り方を大公開！ さらに市販の柚子胡椒でも作れるアレンジレシピまでご紹介！ お鍋、お肉料理、サラダなど大活躍の一品で…',
+      materials: ['鍋', 'しゃぶ', 'おでん', 'ポトフ', 'すき焼き'],
+      tags: ['鍋']
+    },
+    {
+      season: 'autumn',
+      title: 'プロの料理人に１０００円渡したら何を作る？スーパー「オオゼキ」でお買い物',
+      url: 'https://www.youtube.com/watch?v=zn3J6ic_8jM',
+      desc: '本日は武蔵小山にあるスーパーマーケット「オオゼキ」で食材を調達して 「賛否両論」で料理を作ります。 予算は１０００円。一体どんな料理が出来上がるのか？  ↓チャ…',
+      materials: ['タラ', 'たら', '鱈'],
+      tags: ['タラ']
+    },
+    {
+      season: 'autumn',
+      title: '味の決めてはカニカマとコンソメマヨ！笠原流【無限ブロッコリー】',
+      url: 'https://www.youtube.com/watch?v=pqG6n549Hzg',
+      desc: '人気の野菜ブロッコリーを使った「無限ブロッコリー」をご紹介！ コンソメとマヨネーズにニンニクのうま味が加わった味わいはハマること間違いなし！  ↓チャンネル登録…',
+      materials: ['ブロッコリー'],
+      tags: ['ブロッコリー']
+    },
+    {
+      season: 'autumn',
+      title: '生まれ育った武蔵小山で買い物をして料理を作る回',
+      url: 'https://www.youtube.com/watch?v=4U8sT_v6IR8',
+      desc: '本日は生まれ育った東京・武蔵小山でお買い物。 買った食材を使って即席料理も2品作っちゃいます。  ↓チャンネル登録はこちらから↓※毎週 水曜・土曜の１９時から公…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'autumn',
+      title: '簡単に作れて驚きの本格味！笠原流【スープカレー】',
+      url: 'https://www.youtube.com/watch?v=esgABvUDqWI',
+      desc: '札幌名物「スープカレー」を笠原流にアレンジ！ お家にある調味料で簡単に作れて その本格的な味わいにびっくりすること間違いなしです！  ↓チャンネル登録はこちらか…',
+      materials: ['ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ', '味噌汁', 'みそ汁', '豚汁', 'スープ', 'お吸い物', 'けんちん'],
+      tags: ['米・ご飯', '味噌汁・汁物']
+    },
+    {
+      season: 'autumn',
+      title: '「賛否両論」の味をお家で！笠原流【スイートポテト】の作り方',
+      url: 'https://www.youtube.com/watch?v=r9bYntc01qs',
+      desc: 'スイーツ作りも得意なマスターが今回は「スイートポテト」を披露！ 作り方は「賛否両論」で提供しているものとほぼ同じです！ ぜひお家でお店の味を楽しんでください。 …',
+      materials: ['じゃがいも', 'ジャガイモ', 'ポテト', '新じゃが', '肉じゃが', 'コロッケ', 'さつまいも', 'サツマイモ', 'スイートポテト', '大学芋', 'プリン', 'ぜんざい', 'おしるこ', 'わらび餅', 'アイス', 'ケーキ'],
+      tags: ['じゃがいも', 'さつまいも', 'デザート']
+    },
+    {
+      season: 'autumn',
+      title: '【きんぴらごぼう】料理歴2年と35年ではどれだけ違う？',
+      url: 'https://www.youtube.com/watch?v=ZPwzgcGJLiI',
+      desc: '今回は「炒めっ子クラブ」の卒業試験として ナナコさんと笠原将弘が「きんぴらごぼう」を作って比較。 果たしてマスターに認められるきんぴらを作ることができるのか！？…',
+      materials: ['ごぼう', 'ゴボウ', 'きんぴら'],
+      tags: ['ごぼう']
+    },
+    {
+      season: 'autumn',
+      title: '和食のプロが教える極上の食べ方！笠原流【すき焼き】の作り方',
+      url: 'https://www.youtube.com/watch?v=8_JABe-vN4c',
+      desc: '「賛否両論」でも長年愛用している「きび砂糖」を使って 「すき焼き」「みたらし餅」「きゅうりのきび砂糖漬け」の３品をご紹介！ 特別な日にいただく一品として、ぜひお…',
+      materials: ['牛', 'ビーフ', 'すき焼き', 'ステーキ', 'ハンバーグ', 'ローストビーフ', '鍋', 'しゃぶ', 'おでん', 'ポトフ'],
+      tags: ['牛肉', '鍋']
+    },
+    {
+      season: 'autumn',
+      title: 'お酒も箸も止まらなくなる！笠原流【無限かぼちゃ】の作り方',
+      url: 'https://www.youtube.com/watch?v=UkyQ2tmRmAs',
+      desc: '大好評の無限シリーズ！今回は「無限かぼちゃ」 ベーコン、セロリ、ニンニクを使った洋風な味付けが ビールやワインにピッタリの一品です。   ↓チャンネル登録はこち…',
+      materials: ['かぼちゃ', 'カボチャ', '南瓜'],
+      tags: ['かぼちゃ']
+    },
+    {
+      season: 'autumn',
+      title: 'おむすび最強レシピ決定戦【おむすび-１グランプリ】開催！',
+      url: 'https://www.youtube.com/watch?v=nhLZvfWRQSA',
+      desc: '「賛否両論」の若手スタッフとおむすびレシピ対決！ 一体どんなおむすびが誕生するのか！見逃すな！  ↓チャンネル登録はこちらから↓※毎週 水曜・土曜の１９時から公…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'autumn',
+      title: '「賛否両論」のレシピをありのまま公開！【松茸ご飯とお吸い物】',
+      url: 'https://www.youtube.com/watch?v=8Z_8XaBy-zQ',
+      desc: '今回は、「賛否両論」で実際にお店で出している「松茸料理」レシピを包み隠さず大公開しちゃいます！ 下処理から一番だしの取り方まで丁寧に解説！   ↓チャンネル登録…',
+      materials: ['ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ', '味噌汁', 'みそ汁', '豚汁', 'スープ', 'お吸い物', 'けんちん'],
+      tags: ['米・ご飯', '味噌汁・汁物']
+    },
+    {
+      season: 'autumn',
+      title: 'こんな和食が食べたかった！笠原流【イカと里芋の煮物】がほっこり美味しい',
+      url: 'https://www.youtube.com/watch?v=dwDF8MB6DnE',
+      desc: 'こんな和食が食べたかったと思えるイカと里芋を使った煮物をご紹介。 スルメイカの処理も丁寧に解説しているので、 イカの料理が初めてという方もぜひお試しください！ …',
+      materials: ['イカ', 'いか', '里芋', 'さといも'],
+      tags: ['イカ', '里芋']
+    },
+    {
+      season: 'autumn',
+      title: '鶏皮の脂でうまみ倍増！笠原流【無限れんこん】は箸が止まらない！',
+      url: 'https://www.youtube.com/watch?v=iC6y8K66BvU',
+      desc: '大好評の無限シリーズから、今回は「れんこん」 鶏皮、長ねぎ、ニンニクのうま味が加わった「無限れんこん」 一度食べるとハマること間違いなしです！  ↓チャンネル登…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', 'れんこん', 'レンコン', '蓮根'],
+      tags: ['鶏肉', 'れんこん']
+    },
+    {
+      season: 'autumn',
+      title: 'のせて蒸すだけ！簡単でヘルシーな笠原流【せいろ蒸し】',
+      url: 'https://www.youtube.com/watch?v=2H4OkI5Az0A',
+      desc: 'せいろを使った簡単な蒸し料理をご紹介！ 野菜やきのこを豚バラで巻いて白菜と一緒に蒸すだけ！ 料理初心者にもオススメの一品です。  ↓チャンネル登録はこちらから↓…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'autumn',
+      title: '実は得意料理！外はカリカリ中はふわふわの笠原流【お好み焼き】',
+      url: 'https://www.youtube.com/watch?v=tcVJQOhyC9U',
+      desc: '実は笠原の得意料理だった「お好み焼き」をご紹介！ 家庭のフライパンを使って、お店のような味を再現するコツを伝授します。 外側がカリッとしていて中がふわふわ！ハマ…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'autumn',
+      title: '和食のプロが教える最高の食べ方【サンマの塩焼き＆炊き込みご飯】',
+      url: 'https://www.youtube.com/watch?v=nqRC6mmGAtU',
+      desc: '今年はサンマが大漁で安い！ そこで笠原が定番の「サンマの塩焼き」と 「賛否両論」でも提供している「サンマの炊き込みご飯」を伝授！  ↓チャンネル登録はこちらから…',
+      materials: ['サンマ', 'さんま', '秋刀魚', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['サンマ', '米・ご飯']
+    },
+    {
+      season: 'autumn',
+      title: '子供の頃食べたあの味を再現！笠原流【ミートボール弁当】かんたん副菜2品も！',
+      url: 'https://www.youtube.com/watch?v=3067kb4ZQBM',
+      desc: '子供の頃誰しもが食べた懐かしの味「ミートボール」を 和食歴35年の笠原が真剣に再現！ さらに簡単に作れる副菜も2品ご紹介！  ↓チャンネル登録はこちらから↓※毎…',
+      materials: ['ひき肉', '挽き肉', 'ミンチ', 'そぼろ', 'つくね', 'ミートボール', '餃子', 'ぎょうざ', 'メンチ', '麻婆', '弁当'],
+      tags: ['ひき肉', '弁当']
+    },
+    {
+      season: 'autumn',
+      title: 'パリパリ食感がクセになる！笠原流【無限きゅうりサラダ】',
+      url: 'https://www.youtube.com/watch?v=ZQnixrBToHs',
+      desc: '「賛否両論」でも実際に出していて、お客様に大人気の一品！ 余計な調味料を使わずに、味付けはごぼうの漬物と塩昆布だけ！ シンプルなのにクセになる味わいのきゅうりサ…',
+      materials: ['きゅうり', 'キュウリ', '胡瓜'],
+      tags: ['きゅうり']
+    },
+    {
+      season: 'autumn',
+      title: 'パサパサしないコツを伝授！笠原流【鶏レバニラ炒め】の作り方',
+      url: 'https://www.youtube.com/watch?v=mq85ujAXrs4',
+      desc: '今回は「炒めっ子クラブシリーズ」 「賛否両論」2年目のナナコさんが やわらかくてしっとりした「鶏レバニラ」の作り方を教わります。   ↓チャンネル登録はこちらか…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', 'ニラ', 'にら'],
+      tags: ['鶏肉', 'ニラ']
+    },
+    {
+      season: 'autumn',
+      title: '父親が誕生日に作ってくれた【骨付き鶏もも唐揚げ】で53歳のお祝いをした！',
+      url: 'https://www.youtube.com/watch?v=M0-zXZYBV5s',
+      desc: '9月3日は笠原将弘の誕生日！ ということで、子供の頃に父親がよく作ってくれた 「骨付き鶏もも唐揚げ」を記憶を頼りに再現しました！  ↓チャンネル登録はこちらから…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'summer',
+      title: '寿司屋の小野ちゃんに【のり巻き】の完璧な巻き方を教わった',
+      url: 'https://www.youtube.com/watch?v=DGtW9_kJmkk',
+      desc: '職人歴33年の寿司職人・小野ちゃんに かっぱ巻き、かんぴょう巻、ツナたく巻きの 巻き方を丁寧に教えてもらいました！ これを見れば、家庭でも完璧なのり巻きが絶対に…',
+      materials: ['ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['米・ご飯']
+    },
+    {
+      season: 'summer',
+      title: 'これを覚えたら一生使える！極上の【和風ロールキャベツ】の作り方',
+      url: 'https://www.youtube.com/watch?v=AcERo3yExmo',
+      desc: '家庭料理の代表格「ロールキャベツ」をご紹介！ ちょっとめんどくさい・・というイメージもありますが この通りに作れば美味しく、失敗することもありません！ぜひお試し…',
+      materials: ['タラ', 'たら', '鱈', 'キャベツ', '春キャベツ'],
+      tags: ['タラ', 'キャベツ']
+    },
+    {
+      season: 'summer',
+      title: '【お試し企画】ヨシキのわんぱく飯！豪快なスタミナ丼を作るはずが…',
+      url: 'https://www.youtube.com/watch?v=iPp2P-rOCms',
+      desc: '今回は新企画、賛否両論のアンドレことヨシキくんが 笠原マスターに「スタミナ丼」を振る舞います。 一体どのくらい豪快な一品ができるのか！？乞うご期待！   ↓チャ…',
+      materials: ['ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['米・ご飯']
+    },
+    {
+      season: 'summer',
+      title: '香ばしいごま醤油がたまらない！大分名物【アジのりゅうきゅう丼】',
+      url: 'https://www.youtube.com/watch?v=u1fpKa6UsU0',
+      desc: 'アジの刺身に使った「アジのりゅうきゅう丼」をご紹介！ 「りゅうきゅう」は大分県の郷土料理で、 アジなどのお刺身をごま醤油で和えた夏にぴったりの一品です。   ↓…',
+      materials: ['アジ', 'あじ', '鯵', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['アジ', '米・ご飯']
+    },
+    {
+      season: 'summer',
+      title: '【梅干し】で若手とまかない対決！夏にぴったりな爽やかレシピが誕生！',
+      url: 'https://www.youtube.com/watch?v=PbG_YUAiw-g',
+      desc: '大好評の「まかない合戦シリーズ」 今回のテーマ食材は、梅干し！ 一体どんな料理が誕生するのか乞うご期待！  ↓チャンネル登録はこちらから↓※毎週 水曜・土曜の１…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'summer',
+      title: '色んな味が楽しめる！笠原流【和風ビビンバ】が激ウマ！',
+      url: 'https://www.youtube.com/watch?v=ixFwHSoWY54',
+      desc: '韓国料理の定番「ビビンバ」を笠原流にアレンジ！ 色んな味の具材を混ぜて食べればお口の中がパラダイス！ 余った具材は、おかずとして食べてください。  ↓チャンネル…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'summer',
+      title: '昔ながらの固めがウマい！笠原流【昭和のプリン】の作り方',
+      url: 'https://www.youtube.com/watch?v=zR_rrbG0ZlM',
+      desc: '番組始まって初のスイーツレシピ！ 少し硬めで懐かしの味わいの「昭和のプリン」をご紹介！ 夏休みに、お子さんと一緒に作ってみてはいかが？   ↓チャンネル登録はこ…',
+      materials: ['プリン', 'スイートポテト', 'ぜんざい', 'おしるこ', 'わらび餅', 'アイス', 'ケーキ'],
+      tags: ['デザート']
+    },
+    {
+      season: 'summer',
+      title: 'プロが丁寧に教える！ふんわり【トマト卵炒め】の作り方',
+      url: 'https://www.youtube.com/watch?v=k4N-LOQlZAg',
+      desc: '炒め物の極意を教える「炒めっ子クラブ」シリーズ第2弾！ どうしてもベシャッとなりがちな「卵の炒め物」を ふんわりと仕上げる方法を丁寧に解説します！   ↓チャン…',
+      materials: ['卵', 'たまご', '玉子', 'オムレツ', 'だし巻き', '茶碗蒸し', 'かに玉', '天津', 'トマト', 'ミニトマト'],
+      tags: ['卵', 'トマト']
+    },
+    {
+      season: 'summer',
+      title: '【まかない合戦】和食と中華のプロが「サッポロ一番」でアレンジ対決！',
+      url: 'https://www.youtube.com/watch?v=DwDL7P8_si0',
+      desc: '中華の達人・菰田欣也シェフをゲストに迎え「まかない合戦」の特別バージョン！ 「サッポロ一番」みそラーメン・塩らーめんを使って、どっちが美味しいまかないを作れるの…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'summer',
+      title: '家でも楽しめる！簡単で本格的な【バーベキュースペアリブ】で夏を満喫！',
+      url: 'https://www.youtube.com/watch?v=ukz3JLPIEKA',
+      desc: '夏といったらバーベキュー！ 家でタレに漬けておいて持って行けば その本格的な味わいに、みんなのヒーローになること間違いなし！   ↓チャンネル登録はこちらから↓…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'summer',
+      title: '完全保存版！中華の達人・菰田シェフに本物の【麻婆茄子】を教わった',
+      url: 'https://www.youtube.com/watch?v=RrRlp72BqqM',
+      desc: '中華の達人・菰田欣也シェフがゲストで登場！ 今回は、「四川飯店」で習った陳建民流「麻婆茄子」の作り方を伝授！ 目から鱗のプロテクが満載です！  ↓YouTube…',
+      materials: ['ひき肉', '挽き肉', 'ミンチ', 'そぼろ', 'つくね', 'ミートボール', '餃子', 'ぎょうざ', 'メンチ', '麻婆', 'なす', 'ナス', '茄子'],
+      tags: ['ひき肉', 'なす']
+    },
+    {
+      season: 'summer',
+      title: '土用の丑の日はコレ！うなぎの代わりに【いわしの蒲焼き丼】でスタミナをつけよう！',
+      url: 'https://www.youtube.com/watch?v=_1-NEGFHprg',
+      desc: '夏のスタミナ料理といえば「うなぎ」ですが、 イワシを使った安くて美味しい蒲焼丼はいかが？ きゅうりの梅和えと一緒に食べれば、もう至福の時です！   ↓チャンネル…',
+      materials: ['イワシ', 'いわし', '鰯', 'うなぎ', 'ウナギ', '鰻', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['イワシ', 'うなぎ', '米・ご飯']
+    },
+    {
+      season: 'summer',
+      title: 'さっぱり美味しい！和食のプロが作る【冷やし中華】で暑い夏を乗り切ろう！',
+      url: 'https://www.youtube.com/watch?v=s_ZTdgEErIY',
+      desc: '夏の定番「冷やし中華」を和風にアレンジ！ 梅風味の鶏ささみにみょうがや大葉などの薬味、 さらにすだちと生姜が香るさっぱりスープにハマること間違いなし！   ↓チ…',
+      materials: ['うどん', 'そば', '蕎麦', 'ラーメン', 'らーめん', 'パスタ', 'スパゲ', '焼きそば', 'そうめん', 'にゅうめん', 'タンメン', '冷やし中華'],
+      tags: ['麺類']
+    },
+    {
+      season: 'summer',
+      title: '思い出の味を再現！笠原流【ニラ玉】がふっくらシャキシャキでウマい！',
+      url: 'https://www.youtube.com/watch?v=x9cbYPSAc6g',
+      desc: '笠原が若い頃、地元のラーメン屋さんで食べていた「ニラ玉」を再現！ 今回はエビをプラスして食べ応えも抜群！ ご飯のおかず・おつまみ・お弁当にも最適な覚えておいて損…',
+      materials: ['ニラ', 'にら'],
+      tags: ['ニラ']
+    },
+    {
+      season: 'summer',
+      title: '夏バテ解消！鳥取名物【スタミナ納豆】を笠原流にアレンジ！',
+      url: 'https://www.youtube.com/watch?v=56t0mXpzIVQ',
+      desc: '鳥取県の大人気給食メニュー「スタミナ納豆」 そのまま、ご飯のおかずにするも良し パリパリのピーマンと一緒に食べると夏のおつまみにも最高です！   ↓チャンネル登…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'summer',
+      title: '豚キムチより安くてヘルシー！笠原流【鶏キムチ】が夏にオススメ！',
+      url: 'https://www.youtube.com/watch?v=sfuy6CRQg3g',
+      desc: 'キムチと鶏むね肉を使った「鶏キムチ」をご紹介。 ピリ辛でご飯のおかずにも、お酒のおつまみにも最高！ 鶏むね肉をしっとりジューシーに仕上げる火の入れ方は必見です！…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', '豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚'],
+      tags: ['鶏肉', '豚肉']
+    },
+    {
+      season: 'summer',
+      title: 'そうめん最強レシピ決定戦【そうめんー１グランプリ】開催！',
+      url: 'https://www.youtube.com/watch?v=rvJ4hppg164',
+      desc: '夏の定番「そうめん」を笠原将弘と賛否両論のスタッフがアレンジ対決！ 一体どんなレシピが登場するのか、乞うご期待！   ↓チャンネル登録はこちらから↓※毎週 水曜…',
+      materials: ['うどん', 'そば', '蕎麦', 'ラーメン', 'らーめん', 'パスタ', 'スパゲ', '焼きそば', 'そうめん', 'にゅうめん', 'タンメン', '冷やし中華'],
+      tags: ['麺類']
+    },
+    {
+      season: 'summer',
+      title: '【乃木坂46コラボ】弓木奈於さんに大好きな【カニクリームコロッケ】を振る舞った',
+      url: 'https://www.youtube.com/watch?v=AB-wKi_jLak',
+      desc: '乃木坂46のYouTubeチャンネル「乃木坂配信中」とのコラボ回！ 弓木奈於さんがゲストで、大好物の「カニクリームコロッケ」を カニカマを使って作りました。とっ…',
+      materials: ['じゃがいも', 'ジャガイモ', 'ポテト', '新じゃが', '肉じゃが', 'コロッケ'],
+      tags: ['じゃがいも']
+    },
+    {
+      season: 'summer',
+      title: '【永久保存版】この通りに作れば間違いなし！笠原流【カツ丼】の作り方',
+      url: 'https://www.youtube.com/watch?v=iwursRHGFV8',
+      desc: 'みんな大好き「カツ丼」がついに登場！ 食べ飽きない王道の味でありながら、 要所要所にプロならではのワザが炸裂！ぜひお試しを！！   ↓チャンネル登録はこちらから…',
+      materials: ['ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['米・ご飯']
+    },
+    {
+      season: 'summer',
+      title: 'この夏のおつまみナンバー１！笠原流【よだれ砂肝】が簡単でウマい！',
+      url: 'https://www.youtube.com/watch?v=r1aLfj3b9Ys',
+      desc: 'ピリ辛で暑い夏にピッタリな砂肝を使ったおつまみをご紹介！ 中華の定番りょうり「よだれ鶏」をアレンジした、その名も「よだれ砂肝」 銀皮を取る手間もないので、とって…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'summer',
+      title: 'お箸が止まらない！笠原将弘が作る【究極の無限ナス】',
+      url: 'https://www.youtube.com/watch?v=ghXME-e4jG4',
+      desc: '大好評の「無限シリーズ」から、今回はナス！ 薬味をこれでもかと加えた病みつきな味わいは、 ご飯のお供にも、ビールのおつまみにも、お弁当にもピッタリ！ これは作る…',
+      materials: ['なす', 'ナス', '茄子'],
+      tags: ['なす']
+    },
+    {
+      season: 'summer',
+      title: '簡単で家計に優しい！笠原流【チンゲン菜そぼろ炒め】',
+      url: 'https://www.youtube.com/watch?v=_kJiNXQXIwE',
+      desc: 'お手頃価格のチンゲン菜を使った節約レシピをご紹介！ 豚ひき肉と厚揚げを使った食べ応え抜群で とっても簡単に作れるので、ぜひお試しください！  ↓チャンネル登録は…',
+      materials: ['ひき肉', '挽き肉', 'ミンチ', 'そぼろ', 'つくね', 'ミートボール', '餃子', 'ぎょうざ', 'メンチ', '麻婆'],
+      tags: ['ひき肉']
+    },
+    {
+      season: 'summer',
+      title: '喫茶店で食べた思い出の味！笠原流【昭和のナポリタン】',
+      url: 'https://www.youtube.com/watch?v=TKclm3XDHA0',
+      desc: '笠原が子供の頃の頃に食べた 武蔵小山の喫茶店「ベルス」のナポリタンを記憶を頼りに再現！ やわらかめの麺にケチャップが絡んだ懐かしの味をご賞味あれ！   ↓チャン…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'summer',
+      title: 'からしのツーンが爽快！笠原流【豚からし】を絶対に試してほしい！',
+      url: 'https://www.youtube.com/watch?v=WBS3wBcg1Rs',
+      desc: '焼肉っぽいガツンとした味付けをした豚バラに からしと酢を混ぜた特製ソースをかけて食べる「豚からし」 シャキシャキの薬味と一緒に食べるとハマること間違いなし！  …',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚'],
+      tags: ['豚肉']
+    },
+    {
+      season: 'summer',
+      title: '【調理部分ノーカット】大体15分で作れる！笠原流「お魚弁当」',
+      url: 'https://www.youtube.com/watch?v=yyjbd-bfxD8',
+      desc: '前回好評だった「15分弁当」の第2弾！ 今回は、カジキマグロを使った「カジキの照り焼き弁当」をご紹介！ 調理中は完全ノーカットでお楽しみください！   ↓チャン…',
+      materials: ['弁当'],
+      tags: ['弁当']
+    },
+    {
+      season: 'summer',
+      title: '夏の常備菜！山形の郷土料理【だし】を笠原流にアレンジ！',
+      url: 'https://www.youtube.com/watch?v=U2CvsFdBwrg',
+      desc: '山形県民に愛される夏野菜をたっぷり使った「だし」をご紹介！ 暑い夏でも、ご飯やそうめんなどにかければ食欲が進むこと間違いなし！ 冷蔵庫で保存しておけば5日ほど持…',
+      materials: ['だし', '出汁', '煮干し', '常備菜', '作り置き'],
+      tags: ['だし', '常備菜']
+    },
+    {
+      season: 'spring',
+      title: '沖縄のソウルフード【ガーリックチキン】を和食のプロが作ってみた',
+      url: 'https://www.youtube.com/watch?v=XCdE1p5WhLY',
+      desc: '沖縄県民に愛されるソウルフード「ガーリックチキン」を笠原流にアレンジ！ ニンニクがガツンときいたパンチのある味わいはクセになること間違いなし！おつまみにもおかず…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'spring',
+      title: 'しっとり美味しい！いくらでも食べられる笠原流【マカロニサラダ】',
+      url: 'https://www.youtube.com/watch?v=GFcUkD51TEw',
+      desc: '今回は、ビールのおつまみにも晩ごはんの一品としても大人気の「マカロニサラダ」 牛乳を使うことで、サラッとしたクセになる味わいに！ ぜひお試しください！   ↓チ…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: 'プロが丁寧に教える！シャキシャキ【肉野菜炒め】の作り方',
+      url: 'https://www.youtube.com/watch?v=Olf3LS_WMU4',
+      desc: '簡単そうで実は難しいのが「野菜炒め」 べちゃべちゃ水っぽくなって失敗したりしませんか？ そこで今回は、シャキシャキ美味しい肉野菜炒めの作り方を丁寧に解説！   …',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: 'マグロやサーモンでもOK！笠原流【カツオ漬け丼】が絶品！',
+      url: 'https://www.youtube.com/watch?v=9-xV8J51_Cs',
+      desc: '火を使わずに作れるから、とっても簡単！ 特製の漬け醤油に10分ほど漬けるだけで作れる「カツオの漬け丼」 余ったカツオを使った味噌味のなめろう風も教えちゃいます！…',
+      materials: ['鮭', 'サーモン', 'カツオ', 'かつお', '鰹', 'マグロ', 'まぐろ', '鮪', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['鮭', 'カツオ', 'マグロ']
+    },
+    {
+      season: 'spring',
+      title: '安くて簡単！笠原流オリジナルソースで食べる【ハムカツ】',
+      url: 'https://www.youtube.com/watch?v=o8YzLTx4_y8',
+      desc: '町のお肉屋さんでよく売っていた「ハムカツ」を作ってみました。 今回は、笠原オリジナルのソースも３種類ご紹介！ 時間もかからず、簡単に作れるのでぜひお試しあれ！ …',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '従業員も大絶賛の一品！和風のオムレツ【肉じゃが卵焼き】',
+      url: 'https://www.youtube.com/watch?v=rJHzKXossq8',
+      desc: '本場スペインのスパニッシュオムレツに感動を受けた笠原が 和食版で作ったらどんな味になるのか？ ということから生まれた一品「肉じゃが卵焼き」 ご飯のおかずにも、お…',
+      materials: ['卵', 'たまご', '玉子', 'オムレツ', 'だし巻き', '茶碗蒸し', 'かに玉', '天津', 'じゃがいも', 'ジャガイモ', 'ポテト', '新じゃが', '肉じゃが', 'コロッケ'],
+      tags: ['卵', 'じゃがいも']
+    },
+    {
+      season: 'spring',
+      title: 'テクニック満載！パパッと簡単に作れる【笠原家の焼き飯】',
+      url: 'https://www.youtube.com/watch?v=YPVk5cDFEM0',
+      desc: '笠原家で子供たちにも振舞っていた焼き飯のレシピを大公開！ まるで町中華屋さんで食べてるような味わい。 家庭でもマネできる目から鱗のテクニックが満載です！   ↓…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '鶏肉で作る酢豚！笠原流【酢鶏（すどり）】の作り方',
+      url: 'https://www.youtube.com/watch?v=smWcE-XxM-I',
+      desc: '今回は、鶏もも肉を使った酢豚ならぬ「酢鶏」をご紹介！ 甘酢あんは、ケチャップのきいた昔ながらの懐かしさを感じる味わい。 色んな食材で応用可能なので、ぜひお試しを…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', '豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚'],
+      tags: ['鶏肉', '豚肉']
+    },
+    {
+      season: 'spring',
+      title: '余りがちなナンプラーで絶品料理を２品披露！焼き鳥屋時代の幻の料理も登場！',
+      url: 'https://www.youtube.com/watch?v=brOs0ow_sUo',
+      desc: 'タイ料理などを作って残ったナンプラー、冷蔵庫に眠ってませんか？ そんなナンプラーを使って笠原がお鍋と炒め物の２品披露！ 炒め物は、焼き鳥屋時代の幻の料理なので必…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'spring',
+      title: 'トロトロで脂っこくない！笠原流【豚の角煮】の作り方',
+      url: 'https://www.youtube.com/watch?v=tarr7JEglxA',
+      desc: '豚バラブロックを使った「豚の角煮」をご紹介！ 下茹でをしっかりすることでトロトロなのに 脂っこくない仕上がりに！ぜひお試しください。   ↓チャンネル登録はこち…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚'],
+      tags: ['豚肉']
+    },
+    {
+      season: 'spring',
+      title: '【ちくわ】で若手とまかない合戦！意外すぎる料理に驚き！',
+      url: 'https://www.youtube.com/watch?v=jeRs7p7x0lc',
+      desc: '大好評のまかない合戦シリーズ！ 勝敗はつけないので、ぜひ実際に作ってみて どっちが美味しかったか体験してみてください。 今回のテーマ食材は「ちくわ」一体どんな料…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '懐かしの昭和の味！笠原流【焼きうどん】の作り方',
+      url: 'https://www.youtube.com/watch?v=bCeYSaFAXOA',
+      desc: '子供の頃、土曜日のお昼に食べていたような どこか懐かしい味わいの「焼きうどん」 笠原流のちょっとした一手間でとっても美味しくなりますので ぜひお試しください！ …',
+      materials: ['うどん', 'そば', '蕎麦', 'ラーメン', 'らーめん', 'パスタ', 'スパゲ', '焼きそば', 'そうめん', 'にゅうめん', 'タンメン', '冷やし中華'],
+      tags: ['麺類']
+    },
+    {
+      season: 'summer',
+      title: 'これが料理人・笠原将弘のリアルBBQだ！【バーベキュー第3弾 】',
+      url: 'https://www.youtube.com/watch?v=FVchxRqFR54',
+      desc: '久々に笠原将弘の休日に密着！ まずは釣りで食材をゲットして、その後は千葉県富津市へバーベキューへ！ 豪快な料理が続々登場！  過去のバーベキューはこちら↓  バ…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '家にある調味料で簡単に作れる！笠原流【ハヤシライス】',
+      url: 'https://www.youtube.com/watch?v=62uHS2JOJtM',
+      desc: '笠原自身が家でもよく作るというハヤシライスを特別に大公開！ ご家庭にある調味料で簡単に作れて、 まるでお店の味のような本格派の味わいです。ぜひお試しを！！   …',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: 'わさびのツーンが最高！笠原流【豚わさ】が後を引くウマさ！',
+      url: 'https://www.youtube.com/watch?v=NxOviRy--SA',
+      desc: 'ゆで豚にわさびダレをかけていただく、その名も「豚わさ」 豚肉の美味しい脂を、さっぱりと食べられる自信作です！ 一度ぜひお試しください！  ↓チャンネル登録はこち…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚'],
+      tags: ['豚肉']
+    },
+    {
+      season: 'spring',
+      title: 'アンジャッシュ渡部さんに【大人の生姜焼き】を振る舞った',
+      url: 'https://www.youtube.com/watch?v=ltHz47h54dw',
+      desc: 'YouTubeチャンネル「渡部のサシ飲み」とのコラボ回！ 公私共に仲の良いアンジャッシュ渡部さんに振る舞うのは、 ウイスキーの香りをちょっと効かせた「大人の生姜…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚'],
+      tags: ['豚肉']
+    },
+    {
+      season: 'spring',
+      title: '外パリッ！中ホクッ！新じゃがで作る笠原流【無限ポテト】',
+      url: 'https://www.youtube.com/watch?v=grUwlM-IX6w',
+      desc: '今回はポテトを使った無限シリーズ！ 甘じょっぱいタレにガーリックパウダーや黒コショウのアクセントがきいたクセになること間違いなしの一品です！ぜひお試しあれ！  …',
+      materials: ['じゃがいも', 'ジャガイモ', 'ポテト', '新じゃが', '肉じゃが', 'コロッケ'],
+      tags: ['じゃがいも']
+    },
+    {
+      season: 'spring',
+      title: '余った鶏皮をフル活用！笠原流【鶏皮ポン酢&炊き込みご飯】',
+      url: 'https://www.youtube.com/watch?v=n11yD917SR4',
+      desc: '余った鶏皮をどうしていますか？ 捨てるなんてもったいない！とっても美味しい料理に活用できます。 笠原流「鶏皮ポン酢」と「鶏皮とごぼうの炊き込みご飯」をご紹介！ …',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['鶏肉', '米・ご飯']
+    },
+    {
+      season: 'spring',
+      title: 'ダイエットにも最適！笠原流【しっとり鶏ハム】の作り方',
+      url: 'https://www.youtube.com/watch?v=9Aq-Ck9Fbhw',
+      desc: '常備菜として作っておくと便利な「鶏ハム」をご紹介！ 黒コショウやマスタードで食べるとおつまみにもピッタリ！ 驚きのしっとり食感をぜひ体験してみてください。   …',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'spring',
+      title: '【調理部分ノーカット】15分で作れる！笠原流「簡単お弁当」',
+      url: 'https://www.youtube.com/watch?v=_UXuFAAbaqI',
+      desc: '実際に子供のお弁当を作っていた笠原将弘が 忙しい朝に、なるべく早く簡単に作れるお弁当をご紹介！ ご飯の進むおかず3品、ボリュームも満点です！  ↓チャンネル登録…',
+      materials: ['弁当'],
+      tags: ['弁当']
+    },
+    {
+      season: 'spring',
+      title: '【納豆】で若手とまかない合戦！斬新な納豆料理が誕生！',
+      url: 'https://www.youtube.com/watch?v=537149qJa1Q',
+      desc: '大好評のまかない対決がリニューアル！ 勝敗はつけないので、ぜひ実際に作ってもらって どっちか美味しかったか体験してみてください。 今回の食材は「納豆」一体どんな…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '家庭でプロの味！笠原家伝統の【サワラの西京焼き風】を伝授！',
+      url: 'https://www.youtube.com/watch?v=nIVI1JfAzJI',
+      desc: '笠原家に伝わる父親直伝の「西京焼き」の作り方を伝授！ この味噌床の作り方さえ知っておけば 様々なお肉や野菜を漬けられるので、覚えておいて損なしです！  ↓チャン…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '驚きのカリサク衣を体験してほしい！大分名物【とり天】',
+      url: 'https://www.youtube.com/watch?v=ChHV1zmNJBA',
+      desc: '大分名物「とり天」を笠原流にアレンジ！ ポイントは衣にあの液体を入れるだけ！ カリカリサクサクの衣をぜひ体験してみてください。  ↓チャンネル登録はこちらから↓…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '【100万人突破記念】料理人３人でまかないを作ってお祝いした',
+      url: 'https://www.youtube.com/watch?v=iYXmEvZORMg',
+      desc: '登録者100万人どうもありがとうございます！ 今回は、知り合って25年になる旧友 川越シェフ、桝谷シェフを呼んでのスペシャル回です！  ↓「料理のほそ道」チャン…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '新玉ねぎを味わい尽くす！笠原流【煮浸し＆炊き込みご飯】',
+      url: 'https://www.youtube.com/watch?v=MnVllvcZ1EQ',
+      desc: '旬の新玉ねぎを存分に味わいたい方にオススメ料理を2品ご紹介！ シャキシャキ食感がたまらない「新玉ねぎの煮浸し」と とろっとろで甘みが格別な「新玉ねぎの炊き込みご…',
+      materials: ['玉ねぎ', 'たまねぎ', '新玉ねぎ', '長ねぎ', 'ねぎ', 'ネギ', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['玉ねぎ', '長ねぎ', '米・ご飯']
+    },
+    {
+      season: 'spring',
+      title: '家庭で簡単に作れる！笠原流【自家製なめたけ】の作り方。絶品アレンジも３品紹介',
+      url: 'https://www.youtube.com/watch?v=zFKTkW2Qw4s',
+      desc: 'ご飯のお供にぴったりな笠原流「自家製なめたけ」をご紹介！ そのなめたけを使ったアレンジも３品紹介しているので、 ぜひお試しください！  ↓チャンネル登録はこちら…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '家庭で本場の味を再現！笠原流【豚丼】の作り方',
+      url: 'https://www.youtube.com/watch?v=O4l3byCyEzY',
+      desc: '北海道・帯広の名物「豚丼」を家庭で味わえるようにアレンジ！ 香ばしい炭火の味わいを家庭で再現した食べ応え抜群の逸品。 ぜひお試しあれ！！  ↓チャンネル登録はこ…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['豚肉', '米・ご飯']
+    },
+    {
+      season: 'winter',
+      title: '余りがちな調味料【オイスターソース】を救いたい！',
+      url: 'https://www.youtube.com/watch?v=9mkJJtQZVyM',
+      desc: '冷蔵庫に余りがちな調味料「オイスターソース」を使った美味しいレシピを２品ご紹介！ぜひお試しあれ！  ↓チャンネル登録はこちらから↓※毎週 水曜・土曜の１９時から…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'winter',
+      title: '基礎から学ぶ！笠原流【王道・肉じゃが】の作り方',
+      url: 'https://www.youtube.com/watch?v=THMDUXzO38I',
+      desc: '和食の基本「肉じゃが」の作り方を料理初心者にも優しく教えます！ これさえマスターすれば、肉じゃが上手になれること間違いなしです！  ↓チャンネル登録はこちらから…',
+      materials: ['じゃがいも', 'ジャガイモ', 'ポテト', '新じゃが', '肉じゃが', 'コロッケ'],
+      tags: ['じゃがいも']
+    },
+    {
+      season: 'winter',
+      title: '餃子の達人が作る【牡蠣餃子】が驚くほど美味しかった',
+      url: 'https://www.youtube.com/watch?v=YGzFgbn1qbE',
+      desc: '愛知県一宮市にある「肉１８（ニクジュウハチ）」のオーナー満仲シェフに自慢の【牡蠣餃子】を教えてもらいました。 身近な食材を使ったアイデア満載の料理は一見の価値あ…',
+      materials: ['牡蠣', 'カキ', 'かき', 'ひき肉', '挽き肉', 'ミンチ', 'そぼろ', 'つくね', 'ミートボール', '餃子', 'ぎょうざ', 'メンチ', '麻婆'],
+      tags: ['牡蠣', 'ひき肉']
+    },
+    {
+      season: 'winter',
+      title: 'おつまみに最高！鶏肉のプロが教える【手羽元チューリップの煮付け】',
+      url: 'https://www.youtube.com/watch?v=UnSyd5TTiXA',
+      desc: '食べやすくて、肉にガブッとかぶりつける「手羽元チューリップ」 その作り方を丁寧に下ごしらえから教えちゃいます！ お弁当にもおつまみにも最適な一品なので、ぜひ！ …',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'winter',
+      title: '一度食べたらやめられない！笠原流【無限小松菜】の作り方',
+      url: 'https://www.youtube.com/watch?v=5VhMFaj4yjo',
+      desc: 'おつまみにも、ご飯のおかずにも、お弁当にも使える 新作「無限小松菜」をご紹介！ 様々なうま味が絡み合う、やめられない味わいをぜひご堪能ください。  ↓チャンネル…',
+      materials: ['タラ', 'たら', '鱈', '小松菜'],
+      tags: ['タラ', '小松菜']
+    },
+    {
+      season: 'winter',
+      title: '昔懐かし！笠原流【昭和のオムライス】の作り方',
+      url: 'https://www.youtube.com/watch?v=sj84mkq7aEA',
+      desc: '固めに焼いた卵でケチャップたっぷりのチキンライスを包んだ 「昭和風のオムライス」をご紹介！ ぜひこれを食べて、あの頃の味わいを懐かしんでください。  ↓チャンネ…',
+      materials: ['ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['米・ご飯']
+    },
+    {
+      season: 'winter',
+      title: '和食のプロが教える【高野豆腐の煮物】の作り方',
+      url: 'https://www.youtube.com/watch?v=hZ--MS_Tx5U',
+      desc: 'たまには、ほっと落ち着く和食はいかがですか？ ということで「高野豆腐の煮物」をご紹介！ ひと手間で、しみじみ美味しい料理になりますので、ぜひお試しを！  ↓チャ…',
+      materials: ['豆腐', 'とうふ', '厚揚げ', '油揚げ'],
+      tags: ['豆腐']
+    },
+    {
+      season: 'winter',
+      title: '鶏むね肉で作る！笠原流【鶏マヨ】が簡単で激ウマ！',
+      url: 'https://www.youtube.com/watch?v=Sn1Y1dW981I',
+      desc: 'エビの代わりに鶏むね肉を使った「鶏マヨ」をご紹介！ とっても簡単で子供も大人も大好きな味付けです。 絶品マヨソースをぜひお試しください！  ↓チャンネル登録はこ…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'winter',
+      title: '大阪名物【肉吸い】を和食のプロが作ってみた',
+      url: 'https://www.youtube.com/watch?v=7Ds-VO2U0HY',
+      desc: '大阪発祥で肉うどんのうどんを抜いた「肉吸い」 10年ほど前、発祥のお店に食べに行った記憶を頼りに 大阪の味「肉吸い」を再現してみました。ぜひお試しあれ！  ↓チ…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'winter',
+      title: '昔懐かしの味！昭和の【マカロニグラタン】の作り方',
+      url: 'https://www.youtube.com/watch?v=vyeVrZYHPPw',
+      desc: '昭和の時代はご馳走だったあの時代の「マカロニグラタン」を再現！ 笠原家に伝わる自家製ベシャメルソースが何とも懐かしい味わいです。 ぜひお試しください。   ↓チ…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'winter',
+      title: '超簡単版の浅漬け！シャキシャキ美味しい【無限白菜】の作り方',
+      url: 'https://www.youtube.com/watch?v=I1r8Hi0PlCI',
+      desc: '大好評の「無限シリーズ」から、今回は「白菜」 サラダと漬物の中間ぐらいの シャキシャキ感と浅漬け感を両方楽しめる「無限白菜」ぜひお試しあれ！  ↓チャンネル登録…',
+      materials: ['白菜', 'はくさい'],
+      tags: ['白菜']
+    },
+    {
+      season: 'winter',
+      title: 'ご飯もお酒も無限に進む！プロが教える【もつ煮込み】',
+      url: 'https://www.youtube.com/watch?v=yb-iaKb3Eus',
+      desc: '居酒屋で大人気の「もつ煮込み」 その下処理を丁寧に解説！少し時間はかかりますが、 その分とっても美味しい出来上がりになるので、ぜひお試しを！   ↓チャンネル登…',
+      materials: ['ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['米・ご飯']
+    },
+    {
+      season: 'winter',
+      title: 'おうちで簡単にプロの味！笠原流【ぶり大根】の作り方',
+      url: 'https://www.youtube.com/watch?v=R4FJlONgGfw',
+      desc: '笠原流の画期的な作り方で「ぶり大根」が簡単にプロの味に！ ぶりも大根のちょうどいい火入れで、 プロのような美しい仕上がりになること間違いなし！   ↓チャンネル…',
+      materials: ['ブリ', 'ぶり', '鰤', '大根', 'だいこん', 'おでん'],
+      tags: ['ブリ', '大根']
+    },
+    {
+      season: 'winter',
+      title: 'シンプルな具材で究極のスープを味わう！笠原流【鶏豆腐鍋】の作り方',
+      url: 'https://www.youtube.com/watch?v=HJYqOJjReJE',
+      desc: '主な具材は、鶏肉・豆腐・長ねぎのみ！ シンプルだからこそ味わえる 鶏肉の旨みたっぷりのスープをぜひ一度味わってください！   ↓チャンネル登録はこちらから↓※毎…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', '豆腐', 'とうふ', '厚揚げ', '油揚げ', '味噌汁', 'みそ汁', '豚汁', 'スープ', 'お吸い物', 'けんちん', '鍋', 'しゃぶ', 'おでん', 'ポトフ', 'すき焼き'],
+      tags: ['鶏肉', '豆腐', '味噌汁・汁物']
+    },
+    {
+      season: 'winter',
+      title: '冷めてもカリカリ！「賛否両論」の定番【おかき揚げ】の作り方',
+      url: 'https://www.youtube.com/watch?v=pftdWdU_YU4',
+      desc: '柿の種を使った「賛否両論」の「おかき揚げ」は定番で出している人気メニュー。今回は、鶏むね肉とアボカドを使ったおかき揚げをご紹介！ サクサク食感で冷めても美味しい…',
+      materials: ['牡蠣', 'カキ', 'かき'],
+      tags: ['牡蠣']
+    },
+    {
+      season: 'winter',
+      title: '「賛否両論」知る人ぞ知る逸品【大根の福神漬け】の作り方を大公開！',
+      url: 'https://www.youtube.com/watch?v=eh4qgT5BiSM',
+      desc: '今回は、「賛否両論」の知る人ぞ知る逸品「大根の福神漬け」の作り方を なんと全て公開しちゃいます！ さらに、福神漬けを使ったとっておきの食べ方まで伝授！ お家で、…',
+      materials: ['大根', 'だいこん', 'おでん'],
+      tags: ['大根']
+    },
+    {
+      season: 'winter',
+      title: 'お餅の美味しい食べ方を競う【餅-1グランプリ】開催！',
+      url: 'https://www.youtube.com/watch?v=KfNhQu2kf1M',
+      desc: 'お餅の美味しい食べ方を競う、その名も「餅-1グランプリ」を緊急開催！ 参加するのは「賛否両論」の若手スタッフたち。 勝利するのは一体誰か！？ 笠原マスターもとっ…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'winter',
+      title: 'リベンジ成功なるか？大根で若手とガチまかない対決！！',
+      url: 'https://www.youtube.com/watch?v=-RDUPHFdv3Q',
+      desc: '「まかない世代闘争」第５弾！ テーマは「大根を使ったまかない」 前回負けたマスターはリベンジ成功なるか！？  ↓チャンネル登録はこちらから↓※毎週 水曜・土曜の…',
+      materials: ['大根', 'だいこん', 'おでん'],
+      tags: ['大根']
+    },
+    {
+      season: 'winter',
+      title: 'お肉なしでも大満足！寒い季節にぴったりな笠原流【けんちん汁】',
+      url: 'https://www.youtube.com/watch?v=Aq0S8jDPJQw',
+      desc: '今回は、根菜やお芋などの野菜をたっぷりと使った 体が温まる「けんちん汁」をご紹介！ ひと手間を加えることで、お肉を使わなくてもコクのある味わいに！ ぜひお試しく…',
+      materials: ['味噌汁', 'みそ汁', '豚汁', 'スープ', 'お吸い物', 'けんちん'],
+      tags: ['味噌汁・汁物']
+    },
+    {
+      season: 'winter',
+      title: '絶対に失敗しない！ふわふわ食感の笠原流【カステラ卵】の作り方',
+      url: 'https://www.youtube.com/watch?v=SnKAMQ16v7Y',
+      desc: '今回は、おせちにも普段のお弁当にも大活躍の「カステラ卵」をご紹介。 白身魚のすり身の代わりにはんぺんを使い、型に入れて蒸すだけなので焦がしたりする失敗なし！伊達…',
+      materials: ['卵', 'たまご', '玉子', 'オムレツ', 'だし巻き', '茶碗蒸し', 'かに玉', '天津'],
+      tags: ['卵']
+    },
+    {
+      season: 'winter',
+      title: '和食のプロ直伝！鶏ひき肉で作る【松風焼き】の作り方',
+      url: 'https://www.youtube.com/watch?v=iFmd7IDmhDM',
+      desc: '今回は、日本料理の定番「松風焼き」をご紹介。 おせち料理やおもてなしの一品として覚えておいて損はなし！ ふんわりジューシーな鶏ひき肉に、 ナッツとレーズンがアク…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', 'ひき肉', '挽き肉', 'ミンチ', 'そぼろ', 'つくね', 'ミートボール', '餃子', 'ぎょうざ', 'メンチ', '麻婆'],
+      tags: ['鶏肉', 'ひき肉']
+    },
+    {
+      season: 'autumn',
+      title: 'むき甘栗で手軽に作れる！笠原流【甘栗きんとん】の作り方',
+      url: 'https://www.youtube.com/watch?v=KQ2igA8Oj-w',
+      desc: '今回は、おせちの定番「栗きんとん」をご紹介！ 甘栗を使って手軽に作れて、甘栗のほろ苦さがクセになる ちょっと大人の味が楽しめる一品です。ぜひお試しください。  …',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'winter',
+      title: 'イタリアンの桝谷シェフに究極の「トマトパスタ」を教わりました。',
+      url: 'https://www.youtube.com/watch?v=fw0nYWWP_DY',
+      desc: '今回は、盟友・桝谷シェフにトマト缶を使った「トマトパスタ」を教わりました。シンプルを突き詰めた素材の味を存分に堪能できる究極のトマトパスタです。ぜひご家庭でもお…',
+      materials: ['トマト', 'ミニトマト', 'うどん', 'そば', '蕎麦', 'ラーメン', 'らーめん', 'パスタ', 'スパゲ', '焼きそば', 'そうめん', 'にゅうめん', 'タンメン', '冷やし中華'],
+      tags: ['トマト', '麺類']
+    },
+    {
+      season: 'winter',
+      title: 'おせちや箸休めに！笠原流【紅白なます】と【白菜なます】の作り方',
+      url: 'https://www.youtube.com/watch?v=deGx8bInNS0',
+      desc: '今回は、おせちの定番「紅白なます」と「白菜を使ったなます」の2種類をご紹介！簡単に作れる常備菜で、肉料理の箸休めとしても大活躍の一品です。ぜひご参考にしてくださ…',
+      materials: ['白菜', 'はくさい'],
+      tags: ['白菜']
+    },
+    {
+      season: 'winter',
+      title: 'クリスマスは【笠タッキーフライドチキン】で決まり！手羽元で作る簡単レシピ',
+      url: 'https://www.youtube.com/watch?v=9R4xuxuzYbk',
+      desc: '今回は、クリスマスにオススメ！ あの有名フライドチキン風の「笠タッキーフライドチキン」をご紹介！ 手羽元と身近なスパイスを使った簡単レシピ。ぜひお楽しみください…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'autumn',
+      title: '簡単で失敗なし！おうちでプロの味【和風ローストビーフ】の作り方',
+      url: 'https://www.youtube.com/watch?v=BZfsacjdDyw',
+      desc: '今回は、クリスマスにもおせちにもぴったりな笠原流「和風ローストビーフ」をご紹介！ ポイントは周りを焼いた後に煮汁の中で煮込むこと。 フライパンで簡単に作れるので…',
+      materials: ['牛', 'ビーフ', 'すき焼き', 'ステーキ', 'ハンバーグ', 'ローストビーフ'],
+      tags: ['牛肉']
+    },
+    {
+      season: 'autumn',
+      title: '絶対に食べてほしい！岡山県津山市の名物「干し肉」を使った絶品料理２品',
+      url: 'https://www.youtube.com/watch?v=3DNx5GYHWfM',
+      desc: '今回は、岡山県津山市のソウルフード「干し肉」を使ったアレンジ料理をご紹介！ 干し肉は、まるで熟成肉のような奥深い味わいでビックリするほどの美味しさです。 ふるさ…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'autumn',
+      title: 'フライパンで簡単に作れる！笠原流【茶碗蒸し】の作り方',
+      url: 'https://www.youtube.com/watch?v=vK9JeiI1Asc',
+      desc: '今回は、寒い時期にぴったりな「茶碗蒸し」をご紹介！ 蒸し器がないご家庭でも、フライパンを使って簡単に作れちゃいます！ ぜひお試しください。  ↓チャンネル登録は…',
+      materials: ['卵', 'たまご', '玉子', 'オムレツ', 'だし巻き', '茶碗蒸し', 'かに玉', '天津'],
+      tags: ['卵']
+    },
+    {
+      season: 'autumn',
+      title: '料理初心者でも失敗しない！笠原流【煮込みハンバーグ】の作り方',
+      url: 'https://www.youtube.com/watch?v=WhYT6ceemAI',
+      desc: '今回は、笠原流ハンバーグの第２弾！ 寒い季節にぴったりな「煮込みハンバーグ」をご紹介！ 絶品の和風デミソースは必見です！   ↓チャンネル登録はこちらから↓※毎…',
+      materials: ['牛', 'ビーフ', 'すき焼き', 'ステーキ', 'ハンバーグ', 'ローストビーフ'],
+      tags: ['牛肉']
+    },
+    {
+      season: 'autumn',
+      title: '騙されたと思って作ってみて！お肉のような食感【無限こんにゃく】',
+      url: 'https://www.youtube.com/watch?v=Sdu2BRE83JA',
+      desc: '今回は、大好評の笠原無限シリーズ！ こんにゃくをまるでお肉のような食感で食べることができる 「無限こんにゃく」をご紹介！ おつまみにもご飯のおかずにもなるので、…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'autumn',
+      title: '玉ねぎとニンニクだけで作る【炒め玉ねぎスープ】矢部さん激推しレシピ③',
+      url: 'https://www.youtube.com/watch?v=_sELn1AxghU',
+      desc: '今回は、約9年間 仕事を共にした矢部さんが 今まで食べた笠原さんの料理の中でもう一度食べたい料理をご紹介！ ３つ目は、使う食材は玉ねぎとニンニクだけ！ 玉ねぎの…',
+      materials: ['玉ねぎ', 'たまねぎ', '新玉ねぎ', '長ねぎ', 'ねぎ', 'ネギ', '味噌汁', 'みそ汁', '豚汁', 'スープ', 'お吸い物', 'けんちん'],
+      tags: ['玉ねぎ', '長ねぎ', '味噌汁・汁物']
+    },
+    {
+      season: 'autumn',
+      title: '身近な食材で作れる！笠原流【和風カオマンガイ】矢部さん激推しレシピ②',
+      url: 'https://www.youtube.com/watch?v=_zPKRz_wh7E',
+      desc: '今回は、約9年間 仕事を共にした矢部さんが 今まで食べた笠原さんの料理の中でもう一度食べたい料理をご紹介！ ２つ目は、身近な食材と調味料で作れちゃう「和風カオマ…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'winter',
+      title: '牛乳で簡単に作れる【白菜の和風クリーム煮】矢部さん激推しレシピ①',
+      url: 'https://www.youtube.com/watch?v=m8CJpy0S_30',
+      desc: '今回は、約9年間 仕事を共にした矢部さんが 今まで食べた笠原さんの料理の中でもう一度食べたい料理をご紹介！ １つ目は、牛乳を使ったさっぱり味の「白菜の和風クリー…',
+      materials: ['牛', 'ビーフ', 'すき焼き', 'ステーキ', 'ハンバーグ', 'ローストビーフ', '白菜', 'はくさい'],
+      tags: ['牛肉', '白菜']
+    },
+    {
+      season: 'winter',
+      title: 'プロが使うと一味違う！うま味たっぷり笠原流【キムチ鍋】',
+      url: 'https://www.youtube.com/watch?v=ycD-3C8Ukdk',
+      desc: '今回は、寒い冬にピッタリの笠原流「キムチ鍋」をご紹介！ お鍋の素を使わずに、家にある調味料で簡単に作れます。 一手間を加えた本格的な味わいを、ぜひご賞味ください…',
+      materials: ['鍋', 'しゃぶ', 'おでん', 'ポトフ', 'すき焼き'],
+      tags: ['鍋']
+    },
+    {
+      season: 'autumn',
+      title: '作った本人もビックリのウマさ！ペペロンチーノ風【無限もやし】',
+      url: 'https://www.youtube.com/watch?v=UNFbY41awtA',
+      desc: '今回は、大好評の笠原の無限シリーズの「もやし」バージョン！ ペペロンチーノ風の味付けでお酒のおつまみにもご飯のおかずにもピッタリの一品！パパッと作れちゃうので、…',
+      materials: ['もやし'],
+      tags: ['もやし']
+    },
+    {
+      season: 'autumn',
+      title: '若手とガチ対決！トマト缶でどっちが美味しいパスタを作れる？',
+      url: 'https://www.youtube.com/watch?v=d6jsbVJiFfE',
+      desc: '今回は、「まかない世代闘争」第４弾！ テーマは「トマト缶を使ったパスタ」 果たしてどんなまかない料理が出来上がるのか！？  ↓チャンネル登録はこちらから↓※毎週…',
+      materials: ['トマト', 'ミニトマト', 'うどん', 'そば', '蕎麦', 'ラーメン', 'らーめん', 'パスタ', 'スパゲ', '焼きそば', 'そうめん', 'にゅうめん', 'タンメン', '冷やし中華'],
+      tags: ['トマト', '麺類']
+    },
+    {
+      season: 'autumn',
+      title: '和風タルタルソースで食べる！笠原流【カキフライ】',
+      url: 'https://www.youtube.com/watch?v=kMmLXseRDeo',
+      desc: '今回は、今が旬の「カキフライ」をご紹介！ 表面はカリカリ、中はふわっとジューシーな味わい。 笠原特製のガリタルソースでいただくと絶品です！ぜひお試しあれ  ↓チ…',
+      materials: ['牡蠣', 'カキ', 'かき'],
+      tags: ['牡蠣']
+    },
+    {
+      season: 'autumn',
+      title: '和食のプロが作る！秋の味覚【栗ご飯】炊飯器でもOK！',
+      url: 'https://www.youtube.com/watch?v=AT3Wky_4j0s',
+      desc: '今回は、秋の味覚「栗ご飯」をご紹介。 栗の下拵えから土鍋での炊き方まで細かく教えます！ もちろん炊飯器でも同じ分量で作ることができるので ぜひお試しください。 …',
+      materials: ['ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['米・ご飯']
+    },
+    {
+      season: 'winter',
+      title: '家にある調味料で作れる！笠原流【和風 回鍋肉（ホイコーロー）】',
+      url: 'https://www.youtube.com/watch?v=YWrU-ILmoi4',
+      desc: '今回は、和食のプロが作る和風の回鍋肉（ホイコーロー）をご紹介！ 難しい調味料は使わずに家庭にあるものだけで作れちゃう！ 本場の回鍋肉とはまた違う、 あっさりめな…',
+      materials: ['鍋', 'しゃぶ', 'おでん', 'ポトフ', 'すき焼き'],
+      tags: ['鍋']
+    },
+    {
+      season: 'autumn',
+      title: 'シンプルな材料で衝撃のウマさ！昔ながらの【メンチカツ】',
+      url: 'https://www.youtube.com/watch?v=vhm77ot-Ksg',
+      desc: '今回は、シンプルな昔ながらの「メンチカツ」をご紹介！ 基本的な材料は、豚ひき肉と豚バラ、玉ねぎのみ。 作った本人もビックリするほどの美味しさです！ぜひお試しあれ…',
+      materials: ['ひき肉', '挽き肉', 'ミンチ', 'そぼろ', 'つくね', 'ミートボール', '餃子', 'ぎょうざ', 'メンチ', '麻婆'],
+      tags: ['ひき肉']
+    },
+    {
+      season: 'autumn',
+      title: '永久保存版！ちょっと大人な味わいの笠原流【かぼちゃサラダ】',
+      url: 'https://www.youtube.com/watch?v=PFYD8tR3g2k',
+      desc: '今回は、みんな大好き「かぼちゃサラダ」をご紹介！ カリカリのベーコンに、セロリやくるみのアクセントをきかせた 大人のおつまみには最高の一品です！ぜひお試しくださ…',
+      materials: ['かぼちゃ', 'カボチャ', '南瓜'],
+      tags: ['かぼちゃ']
+    },
+    {
+      season: 'autumn',
+      title: '簡単なのにプロの味！笠原流【味玉】を3種類ご紹介！',
+      url: 'https://www.youtube.com/watch?v=c_TVJddLJSs',
+      desc: '今回は、家庭で簡単に作れる特製「味玉」をご紹介。 「醤油味」「味噌味」「ねぎ塩味」の３種類！ ゆで卵を特製の調味料に漬けておくだけで、 とろっとろの美味しい味玉…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'autumn',
+      title: '覚えておけば一生もの！鶏肉で食べ応え抜群【切り干し大根の煮物】',
+      url: 'https://www.youtube.com/watch?v=NAP7rQkgBqE',
+      desc: '今回は、人気の定番和食「切り干し大根の煮物」をご紹介。 鶏肉を使っておかず感を出すことによって、うま味あふれる一品になっています。ぜひお試しあれ！  ↓チャンネ…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', '大根', 'だいこん', 'おでん'],
+      tags: ['鶏肉', '大根']
+    },
+    {
+      season: 'autumn',
+      title: '和食のプロが大好物の【牛タン定食】を再現してみた',
+      url: 'https://www.youtube.com/watch?v=blNv058A9eQ',
+      desc: '今回は、大好物の「牛タン定食」を再現してみました。 牛タンに麦飯、とろろ、浅漬け、南蛮味噌、スープまで完全再現！ 専門店にも負けない味わい！？ぜひお試しください…',
+      materials: ['牛', 'ビーフ', 'すき焼き', 'ステーキ', 'ハンバーグ', 'ローストビーフ'],
+      tags: ['牛肉']
+    },
+    {
+      season: 'autumn',
+      title: '懐かしい味わい！カリカリほくほくの笠原流【大学芋】の作り方',
+      url: 'https://www.youtube.com/watch?v=bdHel1I7_Ws',
+      desc: '今回は、秋の味覚「大学芋」をご紹介！ 基本的な材料は、さつまいもだけ。 砂糖と醤油で味付けしたどこか懐かしい味わいで 大人も子供も大喜び間違いなし！ぜひお試しあ…',
+      materials: ['さつまいも', 'サツマイモ', 'スイートポテト', '大学芋'],
+      tags: ['さつまいも']
+    },
+    {
+      season: 'autumn',
+      title: '若手とガチ対決！「豚こま」でどっちがウマい料理を作れる？【まかない世代闘争 第３弾】',
+      url: 'https://www.youtube.com/watch?v=tbh4H9rqvds',
+      desc: '今回は、大好評の「まかない世代闘争」第３弾！ 「賛否両論」の若手スタッフと笠原マスターがまかない料理でガチ対決！ 今回のテーマ食材は「豚こま」一体どんな料理が飛…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚'],
+      tags: ['豚肉']
+    },
+    {
+      season: 'autumn',
+      title: '大好評！無限シリーズ第２弾【笠原流 無限えのき】の作り方',
+      url: 'https://www.youtube.com/watch?v=C0SgOzMlf90',
+      desc: '今回は、前回の「無限キャベツ」が大好評だったので、第２弾「無限えのき」をご紹介！ 1人で３パックのえのきをペロリと食べてしまうこと間違いなし！ 騙されたと思って…',
+      materials: ['きのこ', 'しめじ', '舞茸', 'まいたけ', 'エリンギ', 'しいたけ', '椎茸', 'えのき', 'マッシュルーム', 'なめこ'],
+      tags: ['きのこ']
+    },
+    {
+      season: 'autumn',
+      title: 'プロのワザ満載！笠原流【天丼】の作り方。自家製タレから揚げ方まで全部教えます！',
+      url: 'https://www.youtube.com/watch?v=fXuAK7hHurg',
+      desc: '今回は、みんな大好き「天丼」をご紹介！ 秋の食材を使って、自家製の天丼タレがめちゃくちゃ美味しい その名も「かさや」の天丼！ぜひお試しください！   ↓チャンネ…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['鶏肉', '米・ご飯']
+    },
+    {
+      season: 'autumn',
+      title: '実は万能調味料！カンロ飴を使って激ウマおかずを作ってみた',
+      url: 'https://www.youtube.com/watch?v=akzX0EhDBCo',
+      desc: '今回は、昔懐かしの味「カンロ飴」をアクセントに加えたおかずを２品ご紹介！ カンロ飴の原材料は、砂糖・醤油・塩・水飴。 溶かして入れるだけで料理が激ウマに！ぜひ１…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'autumn',
+      title: 'プロが本気で作る！厚切り肉で食べ応え抜群【豚バラ大根】',
+      url: 'https://www.youtube.com/watch?v=WmQWcOrDskQ',
+      desc: '今回は、豚から出たうま味が大根に染み渡り、みんな大好き「豚バラ大根」をご紹介！豚肉は厚切りにカットすることで食べ応えアップ！ 逆に大根はちょっと薄切りにすること…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚', '大根', 'だいこん', 'おでん'],
+      tags: ['豚肉', '大根']
+    },
+    {
+      season: 'autumn',
+      title: '辛くてクセになる！名古屋名物【台湾ラーメン】を笠原将弘が再現してみた',
+      url: 'https://www.youtube.com/watch?v=jpbnGDTM_iw',
+      desc: '今回は、名古屋名物「台湾ラーメン」を笠原将弘がおうちで簡単にできるレシピで再現！ピリッと辛くて、一度食べたら止まらない魔性の味に中毒者続出！ぜひ一度お試しくださ…',
+      materials: ['うどん', 'そば', '蕎麦', 'ラーメン', 'らーめん', 'パスタ', 'スパゲ', '焼きそば', 'そうめん', 'にゅうめん', 'タンメン', '冷やし中華'],
+      tags: ['麺類']
+    },
+    {
+      season: 'summer',
+      title: '「ほんとは教えたくなかった…」秘伝のレシピを大公開！笠原流【鯛茶漬け】の作り方',
+      url: 'https://www.youtube.com/watch?v=6BGI9k7EAbc',
+      desc: '今回は、笠原将弘の自信作のひとつ「鯛茶漬け」の作り方を大公開！！ 試行錯誤して生まれた絶品タレの作り方から、鯛のおろし方まで包み隠さず全てお見せします。お見逃し…',
+      materials: ['鯛'],
+      tags: ['タイ']
+    },
+    {
+      season: 'summer',
+      title: '簡単なのに本格的！冷凍うどんで作る【豆乳担々うどん】',
+      url: 'https://www.youtube.com/watch?v=ZFpXwg_SKAQ',
+      desc: '今回は、豆乳を使った「豆乳担々うどん」をご紹介！ ピリッとした辛さが後を引く美味しさで、 ごまのコクと豆乳のまろやかさが本格的な味わいです！ぜひお試しあれ！  …',
+      materials: ['うどん', 'そば', '蕎麦', 'ラーメン', 'らーめん', 'パスタ', 'スパゲ', '焼きそば', 'そうめん', 'にゅうめん', 'タンメン', '冷やし中華'],
+      tags: ['麺類']
+    },
+    {
+      season: 'summer',
+      title: '懐かしの給食を笠原流にアレンジ！しっとりジューシー【チキンロール】',
+      url: 'https://www.youtube.com/watch?v=t0MBhjFP24k',
+      desc: '今回は、小学生の時大好きだった給食の「チキンロール」を笠原流にアレンジ！１枚の鶏肉を焼いたのとは違う、しっとりジュシーな味わいを体験してみてください！  ↓チャ…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'summer',
+      title: 'プロが作るとレベルが違う！【笠原流 無限キャベツ】の作り方',
+      url: 'https://www.youtube.com/watch?v=QKpGavxCAKE',
+      desc: '今回は、キャベツを大量消費できる食べたら止まらない「笠原流 無限キャベツ」をご紹介！火を使わずに簡単に作れるので、ぜひお試しを！  ↓チャンネル登録はこちらから…',
+      materials: ['キャベツ', '春キャベツ'],
+      tags: ['キャベツ']
+    },
+    {
+      season: 'summer',
+      title: '若手とガチ対決！「ナス」でどっちがウマい料理を作れる？【まかない世代闘争 第２弾】',
+      url: 'https://www.youtube.com/watch?v=eEFE443MRFo',
+      desc: '今回は、大好評の「まかない世代闘争」第２弾！ 「賛否両論」の若手スタッフと笠原マスターがまかない料理でガチ対決！ 今回のテーマ食材は「ナス」一体どんな料理が飛び…',
+      materials: ['なす', 'ナス', '茄子'],
+      tags: ['なす']
+    },
+    {
+      season: 'summer',
+      title: '芯で取る濃厚だしが格別！うま味たっぷり【とうもろこしとエビのうま煮】',
+      url: 'https://www.youtube.com/watch?v=IM_C1uUmBaM',
+      desc: '今回は、夏の味覚・とうもろこしを使った「とうもろこしとエビのうま煮」をご紹介！ とうもろこしとエビだけでだしを取ったご飯のおかずにもおつまみにも最高の一品！ぜひ…',
+      materials: ['エビ', 'えび', '海老', 'とうもろこし', 'コーン', 'だし', '出汁', '煮干し'],
+      tags: ['エビ', 'とうもろこし', 'だし']
+    },
+    {
+      season: 'summer',
+      title: 'うま味たっぷり！パセリが決め手の笠原流【キーマカレー】',
+      url: 'https://www.youtube.com/watch?v=q0N44YqPYj8',
+      desc: '今回は、調味料を入れてから煮込み時間10分で作れる笠原流「キーマカレー」をご紹介！ パセリをたっぷりと入れた清涼感バツグンの味わいで、暑い夏を乗り切りましょう！…',
+      materials: ['ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['米・ご飯']
+    },
+    {
+      season: 'summer',
+      title: 'おかずにもおやつにも！福島名物のじゃがいも料理【みそかんぷら】を作ってみた',
+      url: 'https://www.youtube.com/watch?v=HKpb4snaA28',
+      desc: '今回は、福島出身の矢部さんが郷土料理「みそかんぷら」をご紹介！ 甘辛みそ味で味付けされたホクホクのじゃがいもは、 ご飯のおかずにも子供のおやつにもぴったり！ぜひ…',
+      materials: ['じゃがいも', 'ジャガイモ', 'ポテト', '新じゃが', '肉じゃが', 'コロッケ'],
+      tags: ['じゃがいも']
+    },
+    {
+      season: 'summer',
+      title: '永久保存版！元焼き鳥屋が教える【フライパンで作る焼き鳥】全ての極意を大公開！',
+      url: 'https://www.youtube.com/watch?v=bbIt3kO36Mg',
+      desc: '今回は、元焼き鳥屋のマスターが、家庭でお店のような焼き鳥を作る方法を伝授！ 串の打ち方から笠原家に伝わる秘伝のタレまで、全ての極意を惜しみなく大公開しちゃいます…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'summer',
+      title: 'トマトの一番美味しい食べ方！？夏にさっぱり【トマトのお浸し】',
+      url: 'https://www.youtube.com/watch?v=WZ2lM6wjASQ',
+      desc: '今回は、夏に美味しトマトとオクラを使ったお浸しをご紹介！ みずみずしいトマトと上品なおだしが最高のハーモニー！ 冷蔵庫で冷やして食べれば夏にぴったりの一品です。…',
+      materials: ['トマト', 'ミニトマト'],
+      tags: ['トマト']
+    },
+    {
+      season: 'summer',
+      title: 'おうちの焼肉が何倍も楽しくなる！秘伝の焼肉ダレを公開【笠原流 焼肉】',
+      url: 'https://www.youtube.com/watch?v=4GEg71jqADo',
+      desc: '夏だ！ビールだ！焼肉だ！ 今回は、おうちの焼肉が何倍も美味しくなる下味の付け方に 笠原流の絶品オリジナルダレを３種類ご紹介！ 美味しい焼肉でスタミナをつけて暑い…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'summer',
+      title: '笠原家の夏の定番！ズルいほどにウマい【納豆ぶっかけそうめん】',
+      url: 'https://www.youtube.com/watch?v=ZzVR1P7IMnE',
+      desc: '今回は、暑い夏を乗り切るそうめんレシピをご紹介！ 笠原家でも実際によく作っている「納豆ぶっかけそうめん」 納豆、オクラ、みょうがをたっぷりとのせて、 食欲がない…',
+      materials: ['うどん', 'そば', '蕎麦', 'ラーメン', 'らーめん', 'パスタ', 'スパゲ', '焼きそば', 'そうめん', 'にゅうめん', 'タンメン', '冷やし中華'],
+      tags: ['麺類']
+    },
+    {
+      season: 'summer',
+      title: '実は簡単！覚えておいて損なしの王道【ひじきの煮物】',
+      url: 'https://www.youtube.com/watch?v=vfLiDSeBrms',
+      desc: '今回は、和食の定番「ひじきの煮物」をご紹介！ シンプルな昔ながらの甘辛醤油味で、飽きのこない味わいです。 これさえ覚えておけば「料理上手！」と言われること間違い…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'summer',
+      title: '笠原流サウナの楽しみ方を教えてもらった。三重出張【VISON ヴィソン】',
+      url: 'https://www.youtube.com/watch?v=ikbYlXeafbQ',
+      desc: '今回は、久々の出張編。 訪れたのは、三重県多気町にあるリゾート施設「VISON ヴィソン」 お昼は「笠庵」で「夏の笠原御膳」をお客様に振る舞い、 その後は、でき…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'summer',
+      title: '若手とガチ対決！「きゅうり」でどっちがウマい料理を作れる？【まかない世代闘争】',
+      url: 'https://www.youtube.com/watch?v=w-o7UaRtoMU',
+      desc: '今回は、笠原さんが「賛否両論」の若手スタッフとどっちが美味しいまかないを作れるのかガチ勝負！ 第一回のテーマ食材は「きゅうり」 笠原さんと、4年目のキオくん、勝…',
+      materials: ['きゅうり', 'キュウリ', '胡瓜'],
+      tags: ['きゅうり']
+    },
+    {
+      season: 'summer',
+      title: 'プロが本気で作る！サクサクふわふわの【アジフライ】特製ソースも伝授！',
+      url: 'https://www.youtube.com/watch?v=DOwJgGNi644',
+      desc: '今回は、フライパンで少なめの油を使って作る「アジフライ」をご紹介！ いくつかのポイントを守れば、必ずサクサクふわふわのアジフライができます！特製ソースも2種類ご…',
+      materials: ['アジ', 'あじ', '鯵'],
+      tags: ['アジ']
+    },
+    {
+      season: 'summer',
+      title: '火を使わず簡単！サバ缶で作る【冷や汁】で暑い夏を乗り切ろう！',
+      url: 'https://www.youtube.com/watch?v=cU0xAljIC1g',
+      desc: '今回は、宮崎県の郷土料理「冷や汁」を笠原流にアレンジ！ サバ缶で作るので、火を使わずとっても簡単！ 熱いご飯にかけて食べると最高です！ぜひお試しください。   …',
+      materials: ['サバ', 'さば', '鯖'],
+      tags: ['鯖']
+    },
+    {
+      season: 'summer',
+      title: 'ズッキーニは厚切りがウマい！ご飯の最強のお供【豚バラとズッキーニのおかか炒め】',
+      url: 'https://www.youtube.com/watch?v=shfeXSTwFYE',
+      desc: '今回は、豚バラとズッキーニをたっぷりのかつお節と炒めた「豚バラとズッキーニのおかか炒め」をご紹介！ 厚切りに切ったズッキーニは、とってもジューシーでご飯のおかず…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['豚肉', '米・ご飯']
+    },
+    {
+      season: 'spring',
+      title: '鶏肉のプロが教える！さっぱりヘルシー【鶏ささみ春雨サラダ】の作り方',
+      url: 'https://www.youtube.com/watch?v=M0VFS37Cy5Q',
+      desc: '今回は、鶏のささみと春雨を使った「鶏ささみ春雨サラダ」をご紹介！ 中華風のさっぱりダレで、暑い夏でも食欲が進むこと間違いなし！ とってもヘルシーな料理なので、ダ…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', '春雨'],
+      tags: ['鶏肉', '春雨']
+    },
+    {
+      season: 'summer',
+      title: '薬味でサッパリ！夏に食べたい笠原流【和風タコライス】',
+      url: 'https://www.youtube.com/watch?v=yS3R0nFFFaY',
+      desc: '今回は、薬味をアクセントに加えた「笠原流の和風タコライス」をご紹介！ ピリッと辛いひき肉と、レタス、きゅうり、みょうが、大葉などの野菜との相性バッチリ！暑い夏で…',
+      materials: ['タコ', 'たこ', '蛸'],
+      tags: ['タコ']
+    },
+    {
+      season: 'summer',
+      title: 'ご飯が進む！山口県のソウルフード【チキンチキンごぼう】を作ってみた',
+      url: 'https://www.youtube.com/watch?v=26y3pncfOnI',
+      desc: '今回は、山口県で学校給食から広まり大人気となった「チキンチキンごぼう」をご紹介！ 鶏とごぼうの唐揚げを甘辛ダレ絡めた、ご飯のおかずやお酒のおつまみに最高な一品で…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', 'ごぼう', 'ゴボウ', 'きんぴら', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['鶏肉', 'ごぼう', '米・ご飯']
+    },
+    {
+      season: 'summer',
+      title: '「和食っていいな」と思える。夏にピッタリな【翡翠なす】の作り方',
+      url: 'https://www.youtube.com/watch?v=ZBkrQLXuaB8',
+      desc: '今回は、暑い夏にぴったりな日本料理の定番「翡翠なす」をご紹介。 見た目も爽やかで、ひんやり冷たいおだしでいただくナスは絶品！ そうめんの具材やお酒のおつまみにも…',
+      materials: ['なす', 'ナス', '茄子'],
+      tags: ['なす']
+    },
+    {
+      season: 'summer',
+      title: 'もやしを使った激安レシピ！ピリ辛ダレで食べる【もやしの豚バラ巻き】',
+      url: 'https://www.youtube.com/watch?v=6idwnrUDi9I',
+      desc: '今回は、もやしと豚バラを使った「もやしの豚バラ巻き」をご紹介！ 特製のピリ辛ダレで仕上げ、ご飯のおかずにもビールのおつまみにも最高！ お弁当のおかずにも大活躍の…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚', 'もやし'],
+      tags: ['豚肉', 'もやし']
+    },
+    {
+      season: 'summer',
+      title: '薄切り肉を使えば簡単で失敗しない！【薄切りとんかつ】の作り方',
+      url: 'https://www.youtube.com/watch?v=qhKTBVi4HC8',
+      desc: '今回は、薄切り肉を使った「薄切りとんかつ」をご紹介！ 食べると、驚くほどカリカリサクサク！！ 分厚い肉を使うよりも簡単で失敗しにくいので、ぜひお試しください。 …',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚'],
+      tags: ['豚肉']
+    },
+    {
+      season: 'summer',
+      title: 'コラボ第２弾！中華の達人・菰田シェフに【エビチリ】を教えてもらった',
+      url: 'https://www.youtube.com/watch?v=GfzTTzorEQk',
+      desc: '今回は、笠原十番勝負 第２弾！ 2人目の刺客は、南青山に店を構える「4000 Chinese Restaurant」の総料理長・菰田欣也シェフ。 「エビは下味で…',
+      materials: ['エビ', 'えび', '海老'],
+      tags: ['エビ']
+    },
+    {
+      season: 'summer',
+      title: '永久保存版！元焼き鳥屋が教えるプロの下処理【鶏レバーの当座煮】',
+      url: 'https://www.youtube.com/watch?v=M1eeLgVzbCg',
+      desc: '今回は、日持ちがする常備菜「鶏レバーの当座煮」をご紹介！ 生姜とニンニクがきいた甘辛醤油味でおつまみにもご飯のおかずにも最適です。元焼き鳥屋ならではのプロの下処…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'summer',
+      title: 'プロの味をおうちで再現！アレンジ無限大の【白和え】',
+      url: 'https://www.youtube.com/watch?v=OcKNz6TGDrY',
+      desc: '今回は、日本料理の定番料理、豆腐を使った「白和え」をご紹介。 「賛否両論」の味をおうちで手軽に味わってもらうために、 簡単バージョンでその作り方を伝授します！ …',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: 'プロはこうやって作る！絶対に失敗しない【かき揚げ】の作り方',
+      url: 'https://www.youtube.com/watch?v=2au8vhZUtpU',
+      desc: '今回は、リクエストも多かった「王道のかき揚げ」をご紹介！ 今回は、野菜だけを使ったかき揚げですが、 この作り方さえマスターすれば、様々な具材のかき揚げに応用可能…',
+      materials: ['牡蠣', 'カキ', 'かき'],
+      tags: ['牡蠣']
+    },
+    {
+      season: 'spring',
+      title: 'プロが本気で作る【お味噌汁とおむすび】だしの取り方も丁寧に解説！',
+      url: 'https://www.youtube.com/watch?v=5GuHQQvm0WA',
+      desc: '今回は、原点回帰！ シンプルな具材でとことんこだわって作った「お味噌汁とおむすび」 だしの取り方から丁寧に解説していますので、 ぜひ参考にしてみてください！  …',
+      materials: ['味噌汁', 'みそ汁', '豚汁', 'スープ', 'お吸い物', 'けんちん', 'だし', '出汁', '煮干し'],
+      tags: ['味噌汁・汁物', 'だし']
+    },
+    {
+      season: 'spring',
+      title: '白飯がバクバク進む！うましなつかし昭和の味【カレイの煮付け】',
+      url: 'https://www.youtube.com/watch?v=kPPJ8h9iDX0',
+      desc: '今回は、煮込み時間15分で作れちゃう「カレイの煮付け」をご紹介！ 濃い味付けの煮汁がふかふかのカレイの身に絡み、 ご飯が無限に進むこと間違いなし！  ↓チャンネ…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '超しっとりプルプル！笠原流【鶏むね肉のトマトみぞれ煮】を一度体験してみて！',
+      url: 'https://www.youtube.com/watch?v=hGpidwIdwv0',
+      desc: '今回は、大好評の鶏むね肉レシピ！ 鶏むねを驚くほどしっとりと食べられる「鶏むね肉のみぞれ煮」をご紹介。 今回はトマトを入れていますが、色んな野菜を使って様々なバ…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', 'トマト', 'ミニトマト'],
+      tags: ['鶏肉', 'トマト']
+    },
+    {
+      season: 'spring',
+      title: '衝撃のうま味！【カツオのつみれ汁】',
+      url: 'https://www.youtube.com/watch?v=9NRIbeeJDEg',
+      desc: '',
+      materials: ['カツオ', 'かつお', '鰹'],
+      tags: ['カツオ']
+    },
+    {
+      season: 'spring',
+      title: '一度は食べてほしい！うま味あふれる【カツオのつみれ汁】の作り方',
+      url: 'https://www.youtube.com/watch?v=0XJSNs0053k',
+      desc: 'カツオはうま味の濃い魚で、実はつみれにするとものすごく美味しい！ そんなカツオを使った「つみれ汁」をご紹介！ シャキシャキのレタスとの相性も抜群なので、ぜひ一度…',
+      materials: ['カツオ', 'かつお', '鰹'],
+      tags: ['カツオ']
+    },
+    {
+      season: 'spring',
+      title: 'お待たせしました！これぞ王道【焼き餃子】の作り方',
+      url: 'https://www.youtube.com/watch?v=gGBaYNDthus',
+      desc: '今回は、以前からリクエストの多かった「焼き餃子」をご紹介！ 中華のシェフ直伝のシンプルな具材と手順で作る王道の餃子は、 やみつきになること間違いなし！ぜひお試し…',
+      materials: ['ひき肉', '挽き肉', 'ミンチ', 'そぼろ', 'つくね', 'ミートボール', '餃子', 'ぎょうざ', 'メンチ', '麻婆'],
+      tags: ['ひき肉']
+    },
+    {
+      season: 'spring',
+      title: 'お弁当にも最適！生姜たっぷり笠原流【牛しぐれ煮】',
+      url: 'https://www.youtube.com/watch?v=cx1H1RTUW0E',
+      desc: '今回は、新生姜をたっぷりと使った「牛しぐれ煮」をご紹介！ 生姜の爽やかな香りと甘めの味付けがクセになる一品です。 作り置きしてお弁当にも最適なので、ぜひお試しく…',
+      materials: ['牛', 'ビーフ', 'すき焼き', 'ステーキ', 'ハンバーグ', 'ローストビーフ', '弁当'],
+      tags: ['牛肉', '弁当']
+    },
+    {
+      season: 'spring',
+      title: 'おかずにもおつまみにも！食べ応え抜群【にんじんしりしり】の作り方',
+      url: 'https://www.youtube.com/watch?v=Kfr80ckq3kQ',
+      desc: '今回は、沖縄の家庭料理「にんじんしりしり」を笠原流にアレンジ！ 豚肉や卵も入っているので、ご飯が進むメインおかずとして、 また、お弁当のおかずとしても大活躍の一…',
+      materials: ['人参', 'にんじん', 'ニンジン'],
+      tags: ['人参']
+    },
+    {
+      season: 'spring',
+      title: 'こういうのでいいんだよ！町中華風【あんかけ焼きそば】の作り方',
+      url: 'https://www.youtube.com/watch?v=eRypvNnrbjg',
+      desc: '今回は、食べたら懐かしくなる町中華風「あんかけ焼きそば」をご紹介！ 中華丼や八宝菜にも使える濃厚あんと カリッ&柔らかい2つの食感が楽しめる麺にハマること間違い…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: 'ボリューム満点！ジューシーで柔らかい笠原流【トンテキ】の作り方',
+      url: 'https://www.youtube.com/watch?v=lmKeFBVamuU',
+      desc: '今回は、「四日市とんてき」風のボリューム満点な笠原流「とんてき」をご紹介！ クセになる味わいのタレと、たっぷりのニンニクでご飯が何杯でも進む最強のおかずです。ぜ…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: 'これで酢豚も作れる！甘酢あんの極意を伝授【サワラの甘酢あんかけ】',
+      url: 'https://www.youtube.com/watch?v=EZJMbdLqKPU',
+      desc: '今回は、サワラとたっぷりの野菜に甘酢あんをかけた「サワラの甘酢あんかけ」をご紹介。 この甘酢あんの作り方さえ覚えておけば、 酢豚や天津飯にも応用可能！ぜひお試し…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚'],
+      tags: ['豚肉']
+    },
+    {
+      season: 'spring',
+      title: 'プロが本気で作る！昭和の手作り【ポテトコロッケ】',
+      url: 'https://www.youtube.com/watch?v=kHwQeE6isr8',
+      desc: '今回は、シンプルな具材で作る昔懐かしの味わい「ポテトコロッケ」 主な材料は、じゃがいも、玉ねぎ、豚ひき肉だけ！ 衣はサクッと、中はホクホクでクリーミー！ シンプ…',
+      materials: ['じゃがいも', 'ジャガイモ', 'ポテト', '新じゃが', '肉じゃが', 'コロッケ'],
+      tags: ['じゃがいも']
+    },
+    {
+      season: 'spring',
+      title: '硬いイメージが覆える！軽やかなサクサク食感【砂肝の唐揚げ】',
+      url: 'https://www.youtube.com/watch?v=3FChoBtU6vA',
+      desc: '今回は、お酒のおつまみに最適な「砂肝の唐揚げ」をご紹介。 丁寧な下処理をすることで、心地の良いサクサク食感の唐揚げに！ 絶対に試してほしい一品です。 春が旬の「…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'spring',
+      title: '永久保存版！下処理から丁寧に教える【ふきの炒め煮】の作り方',
+      url: 'https://www.youtube.com/watch?v=gDsob5ESwHk',
+      desc: '今回は、春の山菜「ふき」を使った料理をご紹介。 ふきの茎は、唐辛子がピリッときいた「炒め煮」に。 そした葉の部分は、白いご飯の最強のお供「ふりかけ風」にアレンジ…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: 'バターマヨネーズが決め手！超簡単【スナップエンドウとホタテのバター炒め】',
+      url: 'https://www.youtube.com/watch?v=W-I90X9BGv8',
+      desc: '今回は、スナップエンドウを使った簡単レシピをご紹介！ 調理が簡単なボイルホタテと組み合わせたご飯がとにかく進む ハマること間違いなしの一品です。  ↓チャンネル…',
+      materials: ['ホタテ', '帆立'],
+      tags: ['ホタテ']
+    },
+    {
+      season: 'spring',
+      title: 'メインおかずにもなる！食べ応え抜群の【五目おから煮】',
+      url: 'https://www.youtube.com/watch?v=rBaKK41bs4Y',
+      desc: '今回は、お手頃価格で栄養もあるおからを使った「五目おから煮」をご紹介。 野菜やひき肉などの具材をたっぷりと使った食べ応え抜群の一品。 甘じょっぱい味付けで病みつ…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '材料を切って煮込むだけ！笠原流【春キャベツとアサリのスープ煮】',
+      url: 'https://www.youtube.com/watch?v=I0WXKxPpr-A',
+      desc: '今回は、春キャベツ、アサリ、ベーコンを合わせた煮込みスープをご紹介。 アサリの砂抜きさえすませておけば、あとは材料を切って煮込むだけ！ とっても簡単にできて満足…',
+      materials: ['アサリ', 'あさり', 'キャベツ', '春キャベツ', '味噌汁', 'みそ汁', '豚汁', 'スープ', 'お吸い物', 'けんちん'],
+      tags: ['アサリ', 'キャベツ', '味噌汁・汁物']
+    },
+    {
+      season: 'spring',
+      title: '25年来の盟友・桝谷シェフに【王道のペペロンチーノ】を教えてもらった',
+      url: 'https://www.youtube.com/watch?v=k_FM7jq-fYE',
+      desc: '今回は、イタリアン「オステリア ルッカ」の桝谷周一郎シェフに「王道のペペロンチーノ」の作り方を教わりました。 シンプルだからこそ奥の深い、プロならではのテクニッ…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: 'しみじみ美味しい〜！たけのことワカメの最強の組み合わせ【若竹煮】',
+      url: 'https://www.youtube.com/watch?v=5Cl2YEYxR-I',
+      desc: '今回は、春が旬のたけのことワカメを使った「若竹煮（わかたけに）」 優しいおだしと一緒に食べるたけのことワカメの組み合わせは、 何度食べても食べ飽きない味！ ぜひ…',
+      materials: ['筍', 'たけのこ', 'タケノコ'],
+      tags: ['筍']
+    },
+    {
+      season: 'spring',
+      title: 'アク抜きから伝授！シンプルな具材で味わう【たけのこご飯】で春を感じよう',
+      url: 'https://www.youtube.com/watch?v=GX4YcPLDlWg',
+      desc: '今回は、春が旬のたけのこを使った「焼きたけのこご飯」をご紹介。 たけのこのアク抜きから解説していますので、旬の食材をぜひご家庭で美味しく味わってみてください。 …',
+      materials: ['筍', 'たけのこ', 'タケノコ', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['筍', '米・ご飯']
+    },
+    {
+      season: 'summer',
+      title: '笠原&矢部さんのカレーが食べられる店が千葉県・金谷に誕生！料理人のバーベキュー第２弾も',
+      url: 'https://www.youtube.com/watch?v=3SfHvMiIX_c',
+      desc: '今回は、カレーのメニュー開発＆料理人のバーベキュー第２弾！ 千葉県金谷にある「おふくろ」のリニューアルオープンを祝って笠原さん＆矢部さんがオリジナルのカレーを開…',
+      materials: ['ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['米・ご飯']
+    },
+    {
+      season: 'spring',
+      title: '福島・会津地方の郷土料理【こづゆ】を作ってみた',
+      url: 'https://www.youtube.com/watch?v=0tUieTQn7aA',
+      desc: '今回は、矢部さんの故郷・福島県の郷土料理「こづゆ」をご紹介。 干し貝柱と干し椎茸でだしを取り、薄味仕立てにした具沢山のお吸い物です。興味のある方はぜひ作ってみて…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: 'プロのワザ満載！春に食べたい【菜の花と鯛のちらし寿司】',
+      url: 'https://www.youtube.com/watch?v=jpjB5fbKaVg',
+      desc: '今回は、春の食材「菜の花」を使ったちらし寿司をご紹介！ そこまで難しい手順もなく、満足感抜群のちらし寿司です。 鯛以外のお刺身でも作れますので、ぜひ一度お試しく…',
+      materials: ['鯛', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['タイ', '米・ご飯']
+    },
+    {
+      season: 'spring',
+      title: 'ポタージュのような濃厚さ！【新玉ねぎ豚汁】が驚くほどウマかった',
+      url: 'https://www.youtube.com/watch?v=xZKBrVzQPmY',
+      desc: '今回は、新玉ねぎをたっぷりと使った濃厚な「新玉ねぎ豚汁」をご紹介！ 新玉ねぎの甘みと旨味を存分に味わえる、おかずにお酒のつまみにもぴったりの一品です。 材料もシ…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚', '味噌汁', 'みそ汁', '豚汁', 'スープ', 'お吸い物', 'けんちん'],
+      tags: ['豚肉', '味噌汁・汁物']
+    },
+    {
+      season: 'spring',
+      title: '概念が変わる肉肉しさ！究極の【肉シュウマイ】',
+      url: 'https://www.youtube.com/watch?v=853MkH6orsY',
+      desc: '今回は、家でよく作り、研究を重ねた末に完成した笠原流「肉シュウマイ」をご紹介！ 外側はふんわり、中はお肉の旨味が凝縮した肉肉しさを楽しめる究極の肉シュウマイです…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'spring',
+      title: '昭和を感じる懐かしの味！笠原流【カレーうどん】',
+      url: 'https://www.youtube.com/watch?v=yPagZqZOK8w',
+      desc: '今回は、おだしがきいたお蕎麦屋さんでよく出てくるカレーうどんを再現！ 家にある材料だけで簡単に作れるのでぜひお試しください。  ↓チャンネル登録はこちらから↓※…',
+      materials: ['ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['米・ご飯']
+    },
+    {
+      season: 'winter',
+      title: '優しいおだしがジュワッと溢れる！笠原流【いなり寿司】',
+      url: 'https://www.youtube.com/watch?v=e-Y2SSTb_zY',
+      desc: '今回は、笠原流の「いなりずし」をご紹介。 甘さ控えめの優しいおだしで煮込んだお揚げはどこか懐かしい味わい。 関東風の俵型、関西風の三角形、ちょっとオシャレな信田…',
+      materials: ['ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ', 'だし', '出汁', '煮干し'],
+      tags: ['米・ご飯', 'だし']
+    },
+    {
+      season: 'winter',
+      title: '簡単でウマい！ご飯が無限に進む【鶏とじゃがいもの高菜漬け煮】',
+      url: 'https://www.youtube.com/watch?v=-GIDxLcLZnM',
+      desc: '今回は、高菜漬け・鶏もも肉・じゃがいもを使った ご飯もお酒もモリモリ進む一品をご紹介！ 高菜漬けから出る旨味で出汁いらず。 とっても簡単に作れるボリューム満点の…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', 'じゃがいも', 'ジャガイモ', 'ポテト', '新じゃが', '肉じゃが', 'コロッケ', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['鶏肉', 'じゃがいも', '米・ご飯']
+    },
+    {
+      season: 'winter',
+      title: '旨味たっぷり！笠原流【肉豆腐】の作り方',
+      url: 'https://www.youtube.com/watch?v=-whZ2tWnz8A',
+      desc: '今回は、春の七草でお馴染みのセリを使った「肉豆腐」をご紹介。 上品な味付けで、煮汁も飲めるビールにもご飯のおかずにもぴったりな一品です。ぜひお試しください！  …',
+      materials: ['豆腐', 'とうふ', '厚揚げ', '油揚げ'],
+      tags: ['豆腐']
+    },
+    {
+      season: 'spring',
+      title: 'ご飯が進む！メインのおかずにもなる【春菊と牛しゃぶのサラダ】',
+      url: 'https://www.youtube.com/watch?v=OHHMIB8HL4E',
+      desc: '今回は、春菊と牛肉を使った「春菊と牛しゃぶのサラダ」をご紹介！ 韓国風の味付けで、春菊がモリモリ食べられてご飯も進みます。 おつまみとしても主菜としても活躍する…',
+      materials: ['牛', 'ビーフ', 'すき焼き', 'ステーキ', 'ハンバーグ', 'ローストビーフ', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ', '鍋', 'しゃぶ', 'おでん', 'ポトフ'],
+      tags: ['牛肉', '米・ご飯', '鍋']
+    },
+    {
+      season: 'winter',
+      title: '想像を超えるフワフワ食感！ブロッコリーと海老の【ふわふわ揚げ】',
+      url: 'https://www.youtube.com/watch?v=eVtu5lBcLAE',
+      desc: '今回は、ブロッコリーと海老を使ったかき揚げをご紹介。 卵白で作った衣はふわふわの新食感で、やみつきになること間違いなし！ ぜひお試しください。  ↓チャンネル登…',
+      materials: ['エビ', 'えび', '海老', 'ブロッコリー'],
+      tags: ['エビ', 'ブロッコリー']
+    },
+    {
+      season: 'winter',
+      title: '永久保存版！プロの技満載の【ほうれん草のおひたし】',
+      url: 'https://www.youtube.com/watch?v=p_sNzFCMFqY',
+      desc: '今回は、定番料理「ほうれん草のおひたし」をご紹介。 シンプルな料理でも丁寧に作ればここまで美味しくできる！ おひたしを使った応用レシピも２品ご紹介してますので、…',
+      materials: ['ほうれん草', 'ほうれんそう'],
+      tags: ['ほうれん草']
+    },
+    {
+      season: 'winter',
+      title: 'グルメ三昧の珍道中！三重出張【後編】VISON ヴィソン・笠庵',
+      url: 'https://www.youtube.com/watch?v=Gg7zwZjk_iM',
+      desc: '今回は、１泊２日の三重の出張 後編！ 三重県多気町にある日本最大級のリゾート施設「VISON ヴィソン」へ。 グルメ三昧の珍道中をぜひご覧ください。   ↓チャ…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'winter',
+      title: '外カリカリ！中ふわふわ！笠原家の【揚げ出し豆腐】',
+      url: 'https://www.youtube.com/watch?v=GZsDag2h_2E',
+      desc: '今回は、父親・笠原賢がお店のメニューで作っていた揚げ出し豆腐をご紹介！ カリカリの衣におだしがジュワッと染みこんだ揚げ出し豆腐は絶品です！ ぜひお試しくださいま…',
+      materials: ['豆腐', 'とうふ', '厚揚げ', '油揚げ'],
+      tags: ['豆腐']
+    },
+    {
+      season: 'winter',
+      title: '最強おかず！大分名物【にら豚】を作ってみた',
+      url: 'https://www.youtube.com/watch?v=eKLp3V26h1E',
+      desc: '今回は、大分県名物「にら豚」を作ってみました。 野菜もたっぷりとれて、ご飯がとにかく進む コスパも満足度も最高の料理 ぜひお試しください！  ↓チャンネル登録は…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚', 'ニラ', 'にら'],
+      tags: ['豚肉', 'ニラ']
+    },
+    {
+      season: 'winter',
+      title: '子供の頃から大好きな最強常備菜【鶏みそ】',
+      url: 'https://www.youtube.com/watch?v=0WUYHRHbrWM',
+      desc: '今回は、父親が子供の頃によく作ってくれていた「万能 鶏みそ」をご紹介。 ご飯、お餅、じゃがいも、大根、かぶにのせたり、レタスに巻いたり、 作っておくと何にでも使…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', '常備菜', '作り置き'],
+      tags: ['鶏肉', '常備菜']
+    },
+    {
+      season: 'winter',
+      title: '昔懐かし昭和喫茶店の味を再現！【たらこスパゲッティ】',
+      url: 'https://www.youtube.com/watch?v=aFt6vAXuYkM',
+      desc: '今回は、武蔵小山にかつてあった「純喫茶 団」の思い出の味「たらこスパゲッティ」を勝手に再現！ クリーミーで優しい味は誰が食べてもホッと安心する美味しさです。 ぜ…',
+      materials: ['タラ', 'たら', '鱈', 'うどん', 'そば', '蕎麦', 'ラーメン', 'らーめん', 'パスタ', 'スパゲ', '焼きそば', 'そうめん', 'にゅうめん', 'タンメン', '冷やし中華'],
+      tags: ['タラ', '麺類']
+    },
+    {
+      season: 'winter',
+      title: '炊飯器でも簡単に作れる【牡蠣とひじきの炊き込みご飯】',
+      url: 'https://www.youtube.com/watch?v=RI8ggwjBLJw',
+      desc: '今回は、「牡蠣とひじきの炊き込みご飯」をご紹介！ ふっくらとした牡蠣とひじきの相性が抜群の一品。 動画では土鍋で作ってますが、炊飯器でも簡単に作れるので ぜひ作…',
+      materials: ['牡蠣', 'カキ', 'かき', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['牡蠣', '米・ご飯']
+    },
+    {
+      season: 'spring',
+      title: '超かんたん鍋！白菜がモリモリ食べられる【白菜・豚バラ・春雨の土鍋蒸し】',
+      url: 'https://www.youtube.com/watch?v=ZWNA1HC4lFA',
+      desc: '今回は、中国料理の「ピェンロー」を笠原流にアレンジした この時期におすすめの鍋料理をご紹介！ 白菜＋豚バラ＋春雨のコンビネーションが最高の一品なので ぜひお試し…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚', '白菜', 'はくさい', '春雨', '鍋', 'しゃぶ', 'おでん', 'ポトフ', 'すき焼き'],
+      tags: ['豚肉', '白菜', '春雨']
+    },
+    {
+      season: 'winter',
+      title: 'ポイントさえ抑えれば勝ったも同然！【ブリの照り焼き】',
+      url: 'https://www.youtube.com/watch?v=fK4BPPT7Fk0',
+      desc: '今回は、王道の「ブリの照り焼き」をご紹介。 ポイントを抑えれば必ず美味しく作れますので、 ぜひご家庭でもお試しください！  ↓チャンネル登録はこちらから↓※毎週…',
+      materials: ['ブリ', 'ぶり', '鰤'],
+      tags: ['ブリ']
+    },
+    {
+      season: 'winter',
+      title: '修行時代の伝説のまかない【手羽大根】を披露',
+      url: 'https://www.youtube.com/watch?v=ZK9lvoxTulI',
+      desc: '今回は修行時代によく作っていた手羽元と大根を使った「手羽大根」をご紹介。 簡単にできて、ご飯も進む料理ですので、ぜひご家庭でもお試しください。  ↓チャンネル登…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', '大根', 'だいこん', 'おでん'],
+      tags: ['鶏肉', '大根']
+    },
+    {
+      season: 'winter',
+      title: '一度食べたら止まらない！魔性の味【白菜とタコのからし漬け】',
+      url: 'https://www.youtube.com/watch?v=17drRlgmF6A',
+      desc: '2024年最初の料理は、旬の白菜を使った「白菜とタコのからし漬け」をご紹介。 粉からしさえあれば、とっても簡単にできる一品ですので、ぜひお試しください。  ↓チ…',
+      materials: ['タラ', 'たら', '鱈', 'タコ', 'たこ', '蛸', '白菜', 'はくさい'],
+      tags: ['タラ', 'タコ', '白菜']
+    },
+    {
+      season: 'winter',
+      title: '一子相伝！笠原家伝統の【お雑煮】を披露',
+      url: 'https://www.youtube.com/watch?v=sW85e18Gy54',
+      desc: '2023年最後のお料理は、笠原家伝統の「お雑煮」をご紹介！ おばあちゃんのレシピを完コピした関東風のお雑煮です。 ぜひお試しください。  ↓チャンネル登録はこち…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'winter',
+      title: '王道がやっぱりウマい！笠原流【筑前煮】',
+      url: 'https://www.youtube.com/watch?v=XBpQjQjb2YI',
+      desc: '今回は、おせちウィーク第４弾！ リクエストでも多かった「筑前煮」のレシピをご紹介。 王道の筑前煮、ぜひご家庭でお試しください。  ↓チャンネル登録はこちらから↓…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'winter',
+      title: '何にでも使える最強常備菜【しっとり ゆで鶏】最新版！',
+      url: 'https://www.youtube.com/watch?v=WfQTiYQRtx4',
+      desc: '今回は、おせちウィーク第３弾！ 今回は、汁に浸けたまま冷蔵庫に入れて５日ほど保存可能な「ゆで鶏」をご紹介！ おせち、和え物、サラダなど何にでも使える常備菜なので…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', '常備菜', '作り置き'],
+      tags: ['鶏肉', '常備菜']
+    },
+    {
+      season: 'winter',
+      title: '豆腐と季節の野菜を使った玉子焼き【ぎせい豆腐】',
+      url: 'https://www.youtube.com/watch?v=QbdjMfgveiw',
+      desc: '今回は、おせちウィーク第２弾！ 「賛否両論」のおせちにも必ず入れている「擬製（ぎせい）豆腐」の作り方を教えます。 オーブンとケーキ用の型が必要ですが、簡単な材料…',
+      materials: ['卵', 'たまご', '玉子', 'オムレツ', 'だし巻き', '茶碗蒸し', 'かに玉', '天津', '豆腐', 'とうふ', '厚揚げ', '油揚げ'],
+      tags: ['卵', '豆腐']
+    },
+    {
+      season: 'winter',
+      title: 'ビールもご飯も無限に進む！【笠原家の焼豚（やきぶた）】',
+      url: 'https://www.youtube.com/watch?v=zKUTbLNnXQ0',
+      desc: '今回は、おせちウィーク第１弾！ 笠原家でおせちと一緒によく食べていた「焼豚」をご紹介します。 ビールもご飯も進む味で病みつきになる美味しさです。 ぜひお試しくだ…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['豚肉', '米・ご飯']
+    },
+    {
+      season: 'winter',
+      title: '短時間で作るウマい煮魚！【銀だらと豆腐の煮付け】',
+      url: 'https://www.youtube.com/watch?v=vU92njrBtiI',
+      desc: '今回は、ご飯もビールも進む！「銀だらと豆腐の煮付け」をご紹介。 この煮汁の配合を覚えておけば、どんな煮魚でも作れちゃいます！ ぜひお試しください。  ↓チャンネ…',
+      materials: ['豆腐', 'とうふ', '厚揚げ', '油揚げ'],
+      tags: ['豆腐']
+    },
+    {
+      season: 'winter',
+      title: 'これが笠原家のおでんです。秘伝の特製からしもご紹介！',
+      url: 'https://www.youtube.com/watch?v=7q30WDiFrvU',
+      desc: '今回は、笠原家で昔から作られてきたおでんをご紹介します。 特製の「笠ちゃんからし」レシピも特別に公開します！ 寒い冬にぜひ一度お試しくださいませ。  ↓チャンネ…',
+      materials: ['大根', 'だいこん', 'おでん', '鍋', 'しゃぶ', 'ポトフ', 'すき焼き'],
+      tags: ['大根', '鍋']
+    },
+    {
+      season: 'winter',
+      title: '母親の思い出の味を再現【大根とホタテ缶のサラダ】',
+      url: 'https://www.youtube.com/watch?v=cqt9aQ1gEIY',
+      desc: '今回は、とっても簡単で美味しく作れる「大根とホタテ缶のサラダ」をご紹介！母親が子供の時に作ってくれていた思い出の味です。 ぜひお試しください。   ↓チャンネル…',
+      materials: ['ホタテ', '帆立', '大根', 'だいこん', 'おでん'],
+      tags: ['ホタテ', '大根']
+    },
+    {
+      season: 'winter',
+      title: '数え切れないほど作って辿り着いた【究極の親子丼】',
+      url: 'https://www.youtube.com/watch?v=FAUNrU9Jomk',
+      desc: '今回は、焼き鳥屋を営んでいた笠原将弘が今イチオシする親子丼の作り方を伝授！ぜひお試しください！  ↓チャンネル登録はこちらから↓※毎週 水曜・土曜の１９時から公…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['鶏肉', '米・ご飯']
+    },
+    {
+      season: 'autumn',
+      title: '矢部さんの故郷・福島の郷土料理【いかにんじん】を作ってみた',
+      url: 'https://www.youtube.com/watch?v=7BezGXQLaNI',
+      desc: '今回は、矢部さんの故郷である福島県の郷土料理「いかにんじん」を一緒に作ってみました。 お酒のおつまみにもご飯のおかずにもなり、日持ちもきく料理なのでぜひお試しく…',
+      materials: ['イカ', 'いか', '人参', 'にんじん', 'ニンジン'],
+      tags: ['イカ', '人参']
+    },
+    {
+      season: 'autumn',
+      title: '簡単で失敗しない！塩鮭を美味しく食べる【紅鮭ときのこの蒸し煮】',
+      url: 'https://www.youtube.com/watch?v=wMuUAdAQqho',
+      desc: '今回は、どんな切り身魚でも簡単に美味しく食べられる方法を教えます。  ↓チャンネル登録はこちらから↓※毎週 水曜・土曜の１９時から公開予定 http://www…',
+      materials: ['鮭', 'サーモン', 'きのこ', 'しめじ', '舞茸', 'まいたけ', 'エリンギ', 'しいたけ', '椎茸', 'えのき', 'マッシュルーム', 'なめこ'],
+      tags: ['鮭', 'きのこ']
+    },
+    {
+      season: 'spring',
+      title: 'これは絶対作ってほしい！超自信作【牡蠣の豚バラ巻き 春菊あんかけ】',
+      url: 'https://www.youtube.com/watch?v=q9oNPT8Fsbc',
+      desc: '今回は過去に作ったレシピで大変好評だった 「牡蠣の豚バラ巻き 春菊あんかけ」をお届けします。 牡蠣と豚バラが組み合わさった最上級のおかずになっていますので、ぜひ…',
+      materials: ['牡蠣', 'カキ', 'かき', '豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚'],
+      tags: ['牡蠣', '豚肉']
+    },
+    {
+      season: 'autumn',
+      title: 'ホックホク！簡単で驚くほど美味しい【里芋の煮っころがし】',
+      url: 'https://www.youtube.com/watch?v=7xuv7r8zTdE',
+      desc: '今回の材料はほぼ里芋だけ！「里芋の煮っころがし」です。 シンプルな作り方ですが、懐かしい味わいでとても美味しい料理です。 ぜひお試しください。  ↓チャンネル登…',
+      materials: ['里芋', 'さといも'],
+      tags: ['里芋']
+    },
+    {
+      season: 'autumn',
+      title: '文句なく美味しい！笠原流「和風ハンバーグ」を教えます',
+      url: 'https://www.youtube.com/watch?v=R6IwXYQ63gE',
+      desc: '今回は、みんな大好き！「和風ハンバーグ」です。 簡単にできるオススメの付け合わせもご紹介してますので、 ぜひご覧ください！  ↓チャンネル登録はこちらから↓※毎…',
+      materials: ['牛', 'ビーフ', 'すき焼き', 'ステーキ', 'ハンバーグ', 'ローストビーフ'],
+      tags: ['牛肉']
+    },
+    {
+      season: 'autumn',
+      title: 'ひと手間で格段にウマくなる【サーモンと舞茸のバター焼き】',
+      url: 'https://www.youtube.com/watch?v=tIuUZ3VHVGQ',
+      desc: '今回は、サーモンと舞茸を使った「サーモンと舞茸のバター焼き」です。 今までバターが焦げて困ってなかったですか？ ぜひ参考にしてみてください。  ↓チャンネル登録…',
+      materials: ['鮭', 'サーモン', 'きのこ', 'しめじ', '舞茸', 'まいたけ', 'エリンギ', 'しいたけ', '椎茸', 'えのき', 'マッシュルーム', 'なめこ'],
+      tags: ['鮭', 'きのこ']
+    },
+    {
+      season: 'autumn',
+      title: '「賛否両論」の味が家庭で楽しめる【カブの海老そぼろあんかけ】',
+      url: 'https://www.youtube.com/watch?v=Jkurxzrvmmo',
+      desc: '今回は、日本料理の定番りょうり【カブの海老そぼろあんかけ】をご紹介。「賛否両論」の味をぜひご家庭でもお楽しみください。  ↓チャンネル登録はこちらから↓※毎週 …',
+      materials: ['エビ', 'えび', '海老', 'ひき肉', '挽き肉', 'ミンチ', 'そぼろ', 'つくね', 'ミートボール', '餃子', 'ぎょうざ', 'メンチ', '麻婆', 'かぶ', 'カブ', '蕪'],
+      tags: ['エビ', 'ひき肉', 'かぶ']
+    },
+    {
+      season: 'autumn',
+      title: '某ファミレスの【辛味チキン】を笠原流に再現してみた',
+      url: 'https://www.youtube.com/watch?v=xzxuP91x2xA',
+      desc: '今回は、某ファミレスの人気メニュー「辛味チキン」を笠原流に再現してみました。 ビールがいくらでも進む無限ループの味。ぜひお試しください。  ↓チャンネル登録はこ…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'autumn',
+      title: '炊飯器でも美味しく作れる！笠原流【かしわめし】',
+      url: 'https://www.youtube.com/watch?v=_RP99g928Vw',
+      desc: '今回は、炊飯器でも簡単に作れる笠原流の「かしわめし」をご紹介。 シンプルな具材ですが、味は間違いないです！ぜひお試しを〜  ↓チャンネル登録はこちらから↓※毎週…',
+      materials: [],
+      tags: []
+    },
+    {
+      season: 'autumn',
+      title: '陳建一さんのレシピを元に作る【まかない麻婆豆腐】',
+      url: 'https://www.youtube.com/watch?v=7SqEaLpN_js',
+      desc: '今回は、四川料理の第一人者・陳建一さんから教わったレシピを元に 家庭でも簡単に作れる「麻婆豆腐」の作り方をご紹介します。 家庭にある調味料で本格的な麻婆豆腐、ぜ…',
+      materials: ['ひき肉', '挽き肉', 'ミンチ', 'そぼろ', 'つくね', 'ミートボール', '餃子', 'ぎょうざ', 'メンチ', '麻婆', '豆腐', 'とうふ', '厚揚げ', '油揚げ'],
+      tags: ['ひき肉', '豆腐']
+    },
+    {
+      season: 'autumn',
+      title: '笠原将弘直伝！王道の【玉子焼き】の作り方。関東風と関西風',
+      url: 'https://www.youtube.com/watch?v=X-jL8Bry-tY',
+      desc: '今回は、関東風と関西風の「玉子焼き」を２種類ご紹介。 砂糖多めの甘くて美味しい関東風玉子焼きと、 出汁たっぷりの熱々が美味しい関西風だし巻き卵。 ぜひお試しを！…',
+      materials: ['卵', 'たまご', '玉子', 'オムレツ', 'だし巻き', '茶碗蒸し', 'かに玉', '天津'],
+      tags: ['卵']
+    },
+    {
+      season: 'autumn',
+      title: 'シンプルな材料で作る。昔なつかしい味【かぼちゃのうま煮】',
+      url: 'https://www.youtube.com/watch?v=I8AHO_k3lP4',
+      desc: '今回は、シンプルな材料で作る【かぼちゃのうま煮】をご紹介。 かぼちゃのホクホクの食感と煮汁をたっぷり吸った油揚げが最高の一品です。ぜひお試しください。  ↓チャ…',
+      materials: ['かぼちゃ', 'カボチャ', '南瓜'],
+      tags: ['かぼちゃ']
+    },
+    {
+      season: 'autumn',
+      title: 'カリサク感がたまらない笠原流【チキン南蛮】を召し上がれ！',
+      url: 'https://www.youtube.com/watch?v=lt0DqM1IUuo',
+      desc: '今回は、笠原流の【チキン南蛮】をご紹介。 衣がカリカリのジューシーな味わいがたまらない一品です。 ぜひお試しください。  ↓チャンネル登録はこちらから↓※毎週 …',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'autumn',
+      title: 'レンコンは縦に切るとウマい！【レンコンの塩きんぴら】',
+      url: 'https://www.youtube.com/watch?v=s6479uN3DNQ',
+      desc: '今回は、レンコンのきんぴらを２種類ご紹介します。 １つ目は、王道の醤油味。 ２つ目は、ちょっと洋風な感じの塩味です。 それぞれ違った食感が楽しめるきんぴらぜひお…',
+      materials: ['ごぼう', 'ゴボウ', 'きんぴら', 'れんこん', 'レンコン', '蓮根'],
+      tags: ['ごぼう', 'れんこん']
+    },
+    {
+      season: 'autumn',
+      title: '野菜もたっぷりとれる【鶏むね肉の南蛮漬け】は覚えておいて損なし！',
+      url: 'https://www.youtube.com/watch?v=HCeTka92viA',
+      desc: '今回は、大好評の鶏むねレシピ第２弾！ さっぱりと食べられる「鶏むね肉の南蛮漬け」をご紹介。 これさえ覚えておけば様々な南蛮漬けに応用可能ですので、 ぜひお試しく…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'autumn',
+      title: 'シンプルな具材で作る【王道の豚汁】が涙が出るほどウマかった',
+      url: 'https://www.youtube.com/watch?v=P9Clvf8ikio',
+      desc: '今回は、基本から教える「王道の豚汁」 美味しくするポイントが満載ですので、ぜひ一度お試しください。  １.５番出汁の作り方は、「すだちそば」の回をご覧ください。…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚', '味噌汁', 'みそ汁', '豚汁', 'スープ', 'お吸い物', 'けんちん'],
+      tags: ['豚肉', '味噌汁・汁物']
+    },
+    {
+      season: 'autumn',
+      title: '焼き鳥屋の親父直伝！ふわふわ【鶏つくね】のレシピを公開',
+      url: 'https://www.youtube.com/watch?v=XHrCAIVL3Vw',
+      desc: '今回は、焼き鳥屋を営んでいた父親直伝の「鶏つくね」 子供の頃に食べていた思い出の味をそのまま公開しちゃいます。 ほんとに美味しいのでぜひ一度お試しください。  …',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', 'ひき肉', '挽き肉', 'ミンチ', 'そぼろ', 'つくね', 'ミートボール', '餃子', 'ぎょうざ', 'メンチ', '麻婆'],
+      tags: ['鶏肉', 'ひき肉']
+    },
+    {
+      season: 'autumn',
+      title: '簡単に作れる！王道【サバの味噌煮】の作り方',
+      url: 'https://www.youtube.com/watch?v=rtXDaKdNeGg',
+      desc: '今回のお料理は、王道の「サバの味噌煮」です。 煮過ぎずにふっくらと仕上げたサバに、 濃い煮汁をたっぷりと絡めて食べる味噌煮は最高です。  ↓チャンネル登録はこち…',
+      materials: ['サバ', 'さば', '鯖'],
+      tags: ['鯖']
+    },
+    {
+      season: 'autumn',
+      title: '豚肉とさつまいもでご飯が進む！！【豚さつま】',
+      url: 'https://www.youtube.com/watch?v=KzobHcMagrM',
+      desc: '今回は、さつまいもと豚肉を使った料理「豚さつま」をご紹介。 甘じょっぱい味付けの豚肉とさつまいもの甘さがクセになる ご飯も進む一品ですのでぜひお試しください。 …',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚', 'さつまいも', 'サツマイモ', 'スイートポテト', '大学芋', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['豚肉', 'さつまいも', '米・ご飯']
+    },
+    {
+      season: 'autumn',
+      title: 'ダイエットにも最適！さっぱり【きのこと水菜と厚揚げのお浸し】',
+      url: 'https://www.youtube.com/watch?v=ZLBs7Pr8Xps',
+      desc: '今回は、ダイエットにもオススメ！ 副菜としても重宝する「きのこと水菜と厚揚げのお浸し」をご紹介！  ↓チャンネル登録はこちらから↓※毎週 水曜・土曜の１９時から…',
+      materials: ['豆腐', 'とうふ', '厚揚げ', '油揚げ', 'きのこ', 'しめじ', '舞茸', 'まいたけ', 'エリンギ', 'しいたけ', '椎茸', 'えのき', 'マッシュルーム', 'なめこ'],
+      tags: ['豆腐', 'きのこ']
+    },
+    {
+      season: 'autumn',
+      title: '某有名チェーン店の牛丼を再現してみた【笠野家の牛丼】',
+      url: 'https://www.youtube.com/watch?v=TgBD15J7zmk',
+      desc: '今回は、牛丼が好きすぎて有名チェーン〇〇家風の牛丼を作っちゃいました。その名も「笠野家」の牛丼。 興味のある方は、ぜひお試しください。  ↓チャンネル登録はこち…',
+      materials: ['牛', 'ビーフ', 'すき焼き', 'ステーキ', 'ハンバーグ', 'ローストビーフ', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['牛肉', '米・ご飯']
+    },
+    {
+      season: 'autumn',
+      title: 'これぞ王道！笠原流【ポテトサラダ】の作り方',
+      url: 'https://www.youtube.com/watch?v=p0Uhq6olluY',
+      desc: '今回は、みんなが大好きな「ポテトサラダ」をご紹介します。 王道の「ポテトサラダ」といぶりがっこを加えて作る「いぶりがっこポテサラ」の２種類紹介していますので、ぜ…',
+      materials: ['じゃがいも', 'ジャガイモ', 'ポテト', '新じゃが', '肉じゃが', 'コロッケ'],
+      tags: ['じゃがいも']
+    },
+    {
+      season: 'autumn',
+      title: '試行錯誤してたどり着いた最高の焼き方【鶏もも肉の照り焼き】を教えます',
+      url: 'https://www.youtube.com/watch?v=eE-L3C2Xcj0',
+      desc: '今回は、試行錯誤してたどり着いた「鶏もも肉の照り焼き」をご紹介します。 皮はパリパリ、中はしっとりジューシーになる焼き方をぜひご家庭でもお試しください。  ↓チ…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'summer',
+      title: '基本から教える。失敗しない【イワシの梅煮】の作り方',
+      url: 'https://www.youtube.com/watch?v=KekV2upb_vw',
+      desc: '今回は、笠原家の定番料理でもあった「イワシの梅煮」をご紹介します。 ふっくらの身と甘辛い煮汁がクセになる一品ですので、ぜひお試しください。  ↓チャンネル登録は…',
+      materials: ['イワシ', 'いわし', '鰯'],
+      tags: ['イワシ']
+    },
+    {
+      season: 'summer',
+      title: '安くてウマい！ご飯が進む【ナスとピーマンのみそしぎ】',
+      url: 'https://www.youtube.com/watch?v=uAufs7czDqY',
+      desc: '今回は、ナスとピーマンを使ったみそしぎをご紹介。 とっても安く、ご飯がとにかく進む味噌炒めです。 ぜひご家庭のおかずにいかがでしょうか？  ↓チャンネル登録はこ…',
+      materials: ['ピーマン', 'パプリカ', 'なす', 'ナス', '茄子', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['ピーマン', 'なす', '米・ご飯']
+    },
+    {
+      season: 'summer',
+      title: '子供たちに毎朝作っていたお弁当を披露【鶏そぼろの３色弁当】',
+      url: 'https://www.youtube.com/watch?v=4yvaMFDhNpQ',
+      desc: '今回は、子供たちに作っていたお弁当をご紹介。 父親の思い出の味「鶏そぼろ」と「卵のポロポロ」、 ご飯が進む「いんげんのおかか炒め」の３色弁当です。 どれもお家の…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', 'ひき肉', '挽き肉', 'ミンチ', 'そぼろ', 'つくね', 'ミートボール', '餃子', 'ぎょうざ', 'メンチ', '麻婆', '弁当'],
+      tags: ['鶏肉', 'ひき肉', '弁当']
+    },
+    {
+      season: 'summer',
+      title: '「賛否両論」のレシピを公開。夏の定番【焼きとうもろこしの炊き込みご飯】',
+      url: 'https://www.youtube.com/watch?v=Clsj55sECbQ',
+      desc: '今回は、賛否両論の夏の定番メニュー「焼きとうもろこしの炊き込みご飯」をご紹介！ 分量も作り方もお店のレシピと一緒ですので、ぜひご家庭でお楽しみください。  ↓チ…',
+      materials: ['とうもろこし', 'コーン', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['とうもろこし', '米・ご飯']
+    },
+    {
+      season: 'summer',
+      title: 'お酒が進む！スイカでオシャレ料理３品作ります。',
+      url: 'https://www.youtube.com/watch?v=AOVUwSBtt8k',
+      desc: '今回は、スイカを使ったレシピを３品ご紹介します。 火を使わずに作れる簡単レシピですので、 ぜひ一度お試しください！  ↓チャンネル登録はこちらから↓※毎週 水曜…',
+      materials: ['イカ', 'いか'],
+      tags: ['イカ']
+    },
+    {
+      season: 'summer',
+      title: 'カレー粉で作る！簡単でちょっと本格的【まかないチキンカレー】',
+      url: 'https://www.youtube.com/watch?v=ph4XxU8C8Y0',
+      desc: '今回は、「まかないチキンカレー」をご紹介します。 カレー粉をベースに、ちょっと本格的な和風カレーです。 簡単に短時間で作れるのでぜひお試しください。  ↓チャン…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['鶏肉', '米・ご飯']
+    },
+    {
+      season: 'summer',
+      title: 'だしの取り方から教えます。万能＆簡単だしで作る【すだちオクラそば】',
+      url: 'https://www.youtube.com/watch?v=h9J5A5CGLaU',
+      desc: '今回は、「すだちオクラそば」をご紹介します。 家庭で簡単に作れる「１.５番だし」の作り方も詳しく教えます。 暑い夏に最高な冷たいおそば、ぜひ作ってみてください。…',
+      materials: ['オクラ', 'うどん', 'そば', '蕎麦', 'ラーメン', 'らーめん', 'パスタ', 'スパゲ', '焼きそば', 'そうめん', 'にゅうめん', 'タンメン', '冷やし中華', 'だし', '出汁', '煮干し'],
+      tags: ['オクラ', '麺類', 'だし']
+    },
+    {
+      season: 'summer',
+      title: '和えるだけで超簡単！暑い夏にぴったりな【タコの和え物】２種',
+      url: 'https://www.youtube.com/watch?v=GkkDJQbdD80',
+      desc: '今回は、「タコの和え物」を２種類ご紹介します。 暑い夏にぴったりのさっぱりとした和え物なのでぜひお試しあれ！  ↓チャンネル登録はこちらから↓※毎週 水曜・土曜…',
+      materials: ['タコ', 'たこ', '蛸'],
+      tags: ['タコ']
+    },
+    {
+      season: 'summer',
+      title: '騙されたと思って一度やってみて！まるで牛タン【鶏むね肉のタン塩風】',
+      url: 'https://www.youtube.com/watch?v=uKHNjiJc4nI',
+      desc: '今回は、「鶏むね肉のタン塩風」をご紹介します。 目をつぶって食べると、まるで牛タンを食べてるかのよう！ 本当に美味しいのでぜひ作ってみてください。  ↓チャンネ…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏', '牛', 'ビーフ', 'すき焼き', 'ステーキ', 'ハンバーグ', 'ローストビーフ'],
+      tags: ['鶏肉', '牛肉']
+    },
+    {
+      season: 'winter',
+      title: '絶対ハマります。とろとろの冬瓜(とうがん)がウマい【冬瓜のそぼろ煮】',
+      url: 'https://www.youtube.com/watch?v=NndEvteSxy0',
+      desc: '今回は、ご飯が進む「冬瓜のそぼろ煮」をご紹介します。 夏から初秋に旬を迎える冬瓜。 冬瓜料理にチャレンジしてことない方はぜひ一度作ってみてください。 必ずハマり…',
+      materials: ['ひき肉', '挽き肉', 'ミンチ', 'そぼろ', 'つくね', 'ミートボール', '餃子', 'ぎょうざ', 'メンチ', '麻婆'],
+      tags: ['ひき肉']
+    },
+    {
+      season: 'summer',
+      title: 'アジとピーマンで夏のごちそう作ります【アジとピーマンのたたき】',
+      url: 'https://www.youtube.com/watch?v=2Xnh8DpBQQw',
+      desc: '今回は、夏にぴったり！ビールにも合う「アジとピーマンのたたき」をご紹介します。 アジのさばき方も解説しておりますのでぜひご覧ください。  ↓チャンネル登録はこち…',
+      materials: ['アジ', 'あじ', '鯵', 'ピーマン', 'パプリカ'],
+      tags: ['アジ', 'ピーマン']
+    },
+    {
+      season: 'summer',
+      title: 'とうもろこしの美味しさを最大限に引き出します【とうもろこしの岩石揚げ】',
+      url: 'https://www.youtube.com/watch?v=kKBLswH8Les',
+      desc: '今回は、とうもろこしをまるで丸かじりしているような揚げ物「とうもろこしの岩石揚げ」をご紹介します。  ↓チャンネル登録はこちらから↓※毎週 水曜・土曜の１９時か…',
+      materials: ['とうもろこし', 'コーン'],
+      tags: ['とうもろこし']
+    },
+    {
+      season: 'summer',
+      title: '一番簡単で一番ウマい作り方教えます【豚の新生姜焼き】',
+      url: 'https://www.youtube.com/watch?v=LHzmslSJkiM',
+      desc: '今回は、数ある生姜焼きレシピの中でもシンプルでとっても簡単な新生姜を使った豚の生姜焼きをご紹介。ぜひお試しください。  ↓チャンネル登録はこちらから↓※毎週 水…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚'],
+      tags: ['豚肉']
+    },
+    {
+      season: 'summer',
+      title: '冷蔵で５日保存可能！あると嬉しい副菜【たたきごぼう】',
+      url: 'https://www.youtube.com/watch?v=hDN8_jit1oI',
+      desc: '今回は、メインじゃないけどあると嬉しい副菜「たたきごぼう」をご紹介！ キンキンに冷やすと夏にピッタリの一品です。   ↓チャンネル登録はこちらから↓※毎週 水曜…',
+      materials: ['ごぼう', 'ゴボウ', 'きんぴら'],
+      tags: ['ごぼう']
+    },
+    {
+      season: 'summer',
+      title: '長芋はおろさない！簡単でウマい【のりキムチとろろ丼】',
+      url: 'https://www.youtube.com/watch?v=VaPHhQyhh8E',
+      desc: '今回は、キムチと長芋で簡単に作れる「のりキムチとろろ丼」をご紹介。 とっても美味しいので、ぜひお試しください。   ↓チャンネル登録はこちらから↓※毎週 水曜・…',
+      materials: ['長芋', '山芋', 'とろろ', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['長芋', '米・ご飯']
+    },
+    {
+      season: 'summer',
+      title: '豚バラともやしでごちそう作ります【豚バラともやしの梅肉蒸し】',
+      url: 'https://www.youtube.com/watch?v=tL49n3krnlo',
+      desc: '今回は、豚バラともやしで簡単に作れる「豚バラともやしの梅肉蒸し」をご紹介。簡単に作れるのでぜひお試しください。   ↓チャンネル登録はこちらから↓※毎週 水曜・…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚', 'もやし'],
+      tags: ['豚肉', 'もやし']
+    },
+    {
+      season: 'summer',
+      title: '家庭で簡単にお店の味【ナスの田舎煮】で和食が絶対に好きになる',
+      url: 'https://www.youtube.com/watch?v=3O2tfLkrsHg',
+      desc: '今回は、ナスの基本料理「ナスの田舎煮」をご紹介。 キンキンに冷やしたものは、暑い夏にぴったり！ぜひ一度ご賞味あれ   ↓チャンネル登録はこちらから↓※毎週 水曜…',
+      materials: ['なす', 'ナス', '茄子'],
+      tags: ['なす']
+    },
+    {
+      season: 'summer',
+      title: '温かい豚肉と冷たいソースでいただく【豚しゃぶの夏野菜ソース】今年の夏はこれで決まり！',
+      url: 'https://www.youtube.com/watch?v=DDPFrF0Ibqw',
+      desc: '今回は、夏にさっぱりといただける「豚しゃぶの夏野菜ソース」をご紹介。豚肉を美味しくしゃぶしゃぶする方法も解説しております。  ※画質が悪い箇所があり申し訳ござい…',
+      materials: ['豚', 'ポーク', 'とんかつ', 'トンカツ', '生姜焼き', 'しょうが焼き', '角煮', 'チャーシュー', '焼豚', '鍋', 'しゃぶ', 'おでん', 'ポトフ', 'すき焼き'],
+      tags: ['豚肉', '鍋']
+    },
+    {
+      season: 'summer',
+      title: 'ゴーヤの苦さが苦手な人にもおすすめ！【ゴーヤチャンプルーチャーハン】',
+      url: 'https://www.youtube.com/watch?v=4IfOC0ytOGg',
+      desc: '今回は、笠原流！ゴーヤチャンプルーチャーハンをご紹介します。  ※本編にピントが合ってない箇所があり申し訳ございません。 　映像・音声につきましては少しずつ改善…',
+      materials: ['ゴーヤ', 'ご飯', 'ごはん', '炊き込み', '丼', 'チャーハン', '炒飯', 'おにぎり', '雑炊', 'おかゆ', '寿司', 'ちらし', 'カレー', 'オムライス', 'ピラフ', 'TKG', '卵かけ'],
+      tags: ['ゴーヤ', '米・ご飯']
+    },
+    {
+      season: 'summer',
+      title: '出汁いらずで煮込み時間10分【塩こんぶ肉じゃが】ぜひ作ってみて',
+      url: 'https://www.youtube.com/watch?v=h1uyjnSlYMY',
+      desc: '今回は、煮込み時間たったの10分！しかも出汁いらず！ 塩こんぶ肉じゃがをご紹介します。  ↓チャンネル登録はこちらから↓　※毎週 水曜・土曜の１９時から公開予定…',
+      materials: ['じゃがいも', 'ジャガイモ', 'ポテト', '新じゃが', '肉じゃが', 'コロッケ', 'だし', '出汁', '煮干し'],
+      tags: ['じゃがいも', 'だし']
+    },
+    {
+      season: 'summer',
+      title: '味の決め手はニンニクとかつお節！簡単でウマい【レタス炒め】',
+      url: 'https://www.youtube.com/watch?v=pm9s3UOu4o0',
+      desc: '今回は、簡単でウマい！レタス炒め作りました。  ↓チャンネル登録はこちらから↓　※毎週 水曜・土曜の１９時から公開予定 http://www.youtube.c…',
+      materials: ['カツオ', 'かつお', '鰹', 'レタス'],
+      tags: ['カツオ', 'レタス']
+    },
+    {
+      season: 'summer',
+      title: 'トマトを何倍も美味しく食べる方法教えます【玉ねぎドレッシング&レモン黄身酢】',
+      url: 'https://www.youtube.com/watch?v=ZSion_sMf8U',
+      desc: '今回は、夏にぴったりのトマトサラダを2品作りました。  ↓チャンネル登録はこちらから↓　※毎週 水曜・土曜の１９時から公開予定 http://www.youtu…',
+      materials: ['玉ねぎ', 'たまねぎ', '新玉ねぎ', '長ねぎ', 'ねぎ', 'ネギ', 'トマト', 'ミニトマト'],
+      tags: ['玉ねぎ', '長ねぎ', 'トマト']
+    },
+    {
+      season: 'summer',
+      title: '必ずハマる【ラー油肉そうめん】',
+      url: 'https://www.youtube.com/watch?v=KKL-AgMX5uI',
+      desc: '',
+      materials: ['うどん', 'そば', '蕎麦', 'ラーメン', 'らーめん', 'パスタ', 'スパゲ', '焼きそば', 'そうめん', 'にゅうめん', 'タンメン', '冷やし中華'],
+      tags: ['麺類']
+    },
+    {
+      season: 'summer',
+      title: 'この夏はそうめんを余らせない！必ずハマる【ラー油肉そうめん】',
+      url: 'https://www.youtube.com/watch?v=5AQVcoHJueE',
+      desc: '今回は、夏にぴったりのボリューム満点「ラー油肉そうめん」を作りました。  ↓チャンネル登録はこちらから↓　※毎週 水曜・土曜の１９時から公開予定 http://…',
+      materials: ['うどん', 'そば', '蕎麦', 'ラーメン', 'らーめん', 'パスタ', 'スパゲ', '焼きそば', 'そうめん', 'にゅうめん', 'タンメン', '冷やし中華'],
+      tags: ['麺類']
+    },
+    {
+      season: 'summer',
+      title: 'きゅうり５本で万能おかず３品作ります【たたききゅうり&きゅうりドレッシング&蛇腹きゅうり】',
+      url: 'https://www.youtube.com/watch?v=3SM7B-OIBaQ',
+      desc: '今回は、きゅうり５本で３品の万能おかずを作りました。  ↓チャンネル登録はこちらから↓　※毎週 水曜・土曜の１９時から公開予定 http://www.youtu…',
+      materials: ['きゅうり', 'キュウリ', '胡瓜'],
+      tags: ['きゅうり']
+    },
+    {
+      season: 'summer',
+      title: 'きゅうり１本で作る万能ドレッシング',
+      url: 'https://www.youtube.com/watch?v=-8_fh83f4qs',
+      desc: '本編ではきゅうりを使ったおかずを３品作っています。  ↓チャンネル登録はこちらから↓　※毎週 水曜・土曜の１９時から公開予定 http://www.youtub…',
+      materials: ['きゅうり', 'キュウリ', '胡瓜'],
+      tags: ['きゅうり']
+    },
+    {
+      season: 'summer',
+      title: '料理歴３０年かけてたどり着いた「最高の唐揚げ」中ジューシーで外はカリッカリ！その極意を全て教えます。',
+      url: 'https://www.youtube.com/watch?v=6a6QFtoM9kc',
+      desc: 'YouTubeはじめました。 今後は週２ぐらいのペースで動画を上げていければと思っています。 末長くよろしくお願いいたします。   「鶏ももと手羽先の唐揚げ」（…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    },
+    {
+      season: 'summer',
+      title: '料理歴30年以上の【最高の唐揚げ】',
+      url: 'https://www.youtube.com/watch?v=8xez9l1IUFc',
+      desc: 'YouTubeはじめました。 今後は週２ぐらいのペースで動画を上げていければと思っています。 末長くよろしくお願いいたします。  【賛否両論 HP】 https…',
+      materials: ['鶏', 'チキン', '地鶏', '手羽', 'ささみ', 'むね', '親子丼', '唐揚げ', 'から揚げ', '焼き鳥', 'よだれ鶏'],
+      tags: ['鶏肉']
+    }
+  ];
+  // ===RECIPES_END===
+
+  const SEASON_LABEL = { spring: '春のレシピ', summer: '夏のレシピ', autumn: '秋のレシピ', winter: '冬のレシピ', all: '通年レシピ' };
+  const SEASON_BADGE_CLASS = { spring: 'badge-spring', summer: 'badge-summer', autumn: 'badge-autumn', winter: 'badge-winter', all: 'badge-all' };
+  const HANKO_CHAR = { spring: '春', summer: '夏', autumn: '秋', winter: '冬', all: '全' };
+
+  let currentSeason = 'all';
+  let activeQuickTag = null;
+
+  function renderCards(){
+    const list = document.getElementById('recipe-list');
+    list.innerHTML = recipes.map((r, i) => `
+      <div class="card" data-index="${i}" data-season="${r.season}" data-materials="${(r.materials||[]).join(' ').toLowerCase()}">
+        <span class="season-badge ${SEASON_BADGE_CLASS[r.season]}">${SEASON_LABEL[r.season]}</span>
+        <h3 class="card-title"><a href="${r.url}" target="_blank" rel="noopener">${r.title}</a></h3>
+        <div class="card-meta">${r.desc}</div>
+        <div class="card-tags">${(r.tags||[]).map(t => `<span class="tag">材料: ${t}</span>`).join('')}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderQuickTags(){
+    // 登場頻度の高い材料タグ上位14件をクイックタグ化
+    const freq = new Map();
+    recipes.forEach(r => (r.tags||[]).forEach(t => freq.set(t, (freq.get(t)||0) + 1)));
+    const topTags = Array.from(freq.entries()).sort((a,b) => b[1]-a[1]).slice(0, 14).map(e => e[0]);
+    const box = document.getElementById('quick-tags');
+    box.innerHTML = topTags.map(t =>
+      `<button type="button" class="quick-tag" data-tag="${t}">${t}</button>`
+    ).join('');
+    box.querySelectorAll('.quick-tag').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tag = btn.getAttribute('data-tag');
+        const input = document.getElementById('material-search');
+        if (activeQuickTag === tag){
+          activeQuickTag = null;
+          input.value = '';
+        } else {
+          activeQuickTag = tag;
+          input.value = tag;
+        }
+        filterRecipes();
+      });
+    });
+  }
+
+  function setSeason(season, btn){
+    currentSeason = season;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('hanko-stamp').textContent = HANKO_CHAR[season];
+    filterRecipes();
+  }
+
+  function clearSearch(){
+    document.getElementById('material-search').value = '';
+    activeQuickTag = null;
+    filterRecipes();
+  }
+
+  function filterRecipes(){
+    const raw = document.getElementById('material-search').value;
+    const searchInput = raw.toLowerCase().trim();
+    document.getElementById('clear-btn').classList.toggle('show', raw.length > 0);
+
+    document.querySelectorAll('.quick-tag').forEach(btn => {
+      btn.classList.toggle('active', activeQuickTag && btn.getAttribute('data-tag') === activeQuickTag);
+    });
+
+    const cards = document.querySelectorAll('.card');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      const season = card.getAttribute('data-season');
+      const materials = card.getAttribute('data-materials');
+      const title = card.querySelector('.card-title').textContent.toLowerCase();
+
+      const matchesSeason = (currentSeason === 'all' || season === currentSeason || season === 'all');
+      const matchesSearch = (!searchInput || materials.includes(searchInput) || title.includes(searchInput));
+
+      if (matchesSeason && matchesSearch){
+        card.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    document.getElementById('no-results').style.display = visibleCount === 0 ? 'block' : 'none';
+    document.getElementById('result-count').textContent = `全${recipes.length}件中 ${visibleCount}件を表示`;
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => setSeason(btn.getAttribute('data-season'), btn));
+  });
+
+  renderCards();
+  renderQuickTags();
+  filterRecipes();
+</script>
+
+</body>
+</html>
