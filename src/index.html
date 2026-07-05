@@ -222,7 +222,16 @@
     font-size: 11.5px;
     border-radius: 4px;
     margin: 0 5px 5px 0;
+    /* クリック絞り込み用: ボタン化しても見た目を踏襲 */
+    border: 1px solid transparent;
+    font-family: inherit;
+    line-height: 1.7;
+    cursor: pointer;
+    transition: background-color .12s, color .12s, border-color .12s;
   }
+  .tag:hover{ background-color: #e6dfcd; border-color: var(--line); }
+  .tag:focus-visible{ outline: 2px solid var(--indigo); outline-offset: 1px; }
+  .tag.active{ background-color: var(--shu); color: #fff; border-color: var(--shu); }
 
   footer{ text-align: center; margin-top: 26px; font-size: 12px; color: var(--ink-soft); padding: 10px; }
 
@@ -2861,11 +2870,11 @@
   function renderCards(){
     const list = document.getElementById('recipe-list');
     list.innerHTML = recipes.map((r, i) => `
-      <div class="card" data-index="${i}" data-season="${r.season}" data-materials="${(r.materials||[]).join(' ').toLowerCase()}">
+      <div class="card" data-index="${i}" data-season="${r.season}" data-materials="${(r.materials||[]).join(' ').toLowerCase()}" data-tags="${(r.tags||[]).join('|').toLowerCase()}">
         <span class="season-badge ${SEASON_BADGE_CLASS[r.season]}">${SEASON_LABEL[r.season]}</span>
         <h3 class="card-title"><a href="${r.url}" target="_blank" rel="noopener">${r.title}</a></h3>
         <div class="card-meta">${r.desc}</div>
-        <div class="card-tags">${(r.tags||[]).map(t => `<span class="tag">材料: ${t}</span>`).join('')}</div>
+        <div class="card-tags">${(r.tags||[]).map(t => `<button type="button" class="tag" data-tag="${t}" title="「${t}」で絞り込む">材料: ${t}</button>`).join('')}</div>
       </div>
     `).join('');
   }
@@ -2880,19 +2889,24 @@
       `<button type="button" class="quick-tag" data-tag="${t}">${t}</button>`
     ).join('');
     box.querySelectorAll('.quick-tag').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const tag = btn.getAttribute('data-tag');
-        const input = document.getElementById('material-search');
-        if (activeQuickTag === tag){
-          activeQuickTag = null;
-          input.value = '';
-        } else {
-          activeQuickTag = tag;
-          input.value = tag;
-        }
-        filterRecipes();
-      });
+      btn.addEventListener('click', () => applyTagFilter(btn.getAttribute('data-tag')));
     });
+  }
+
+  // クイックタグ・カード材料タグ共通の絞り込み(検索欄にタグ名を入れてトグル)
+  function applyTagFilter(tag){
+    const input = document.getElementById('material-search');
+    if (activeQuickTag === tag){
+      activeQuickTag = null;
+      input.value = '';
+    } else {
+      activeQuickTag = tag;
+      input.value = tag;
+    }
+    filterRecipes();
+    // 先頭へ即時スクロール(検索欄・件数・季節タブを見せる)。全件時はページが
+    // 非常に長く smooth だと戻りが遅いため instant。
+    window.scrollTo(0, 0);
   }
 
   function setSeason(season, btn){
@@ -2917,6 +2931,9 @@
     document.querySelectorAll('.quick-tag').forEach(btn => {
       btn.classList.toggle('active', activeQuickTag && btn.getAttribute('data-tag') === activeQuickTag);
     });
+    document.querySelectorAll('.card-tags .tag').forEach(btn => {
+      btn.classList.toggle('active', activeQuickTag && btn.getAttribute('data-tag') === activeQuickTag);
+    });
 
     const cards = document.querySelectorAll('.card');
     let visibleCount = 0;
@@ -2924,10 +2941,11 @@
     cards.forEach(card => {
       const season = card.getAttribute('data-season');
       const materials = card.getAttribute('data-materials');
+      const tags = card.getAttribute('data-tags') || '';
       const title = card.querySelector('.card-title').textContent.toLowerCase();
 
       const matchesSeason = (currentSeason === 'all' || season === currentSeason || season === 'all');
-      const matchesSearch = (!searchInput || materials.includes(searchInput) || title.includes(searchInput));
+      const matchesSearch = (!searchInput || materials.includes(searchInput) || title.includes(searchInput) || tags.includes(searchInput));
 
       if (matchesSeason && matchesSearch){
         card.classList.remove('hidden');
@@ -2943,6 +2961,12 @@
 
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => setSeason(btn.getAttribute('data-season'), btn));
+  });
+
+  // カード材料タグのクリック絞り込み(イベント委譲: カードは動的生成のため)
+  document.getElementById('recipe-list').addEventListener('click', (e) => {
+    const btn = e.target.closest('.card-tags .tag[data-tag]');
+    if (btn) applyTagFilter(btn.getAttribute('data-tag'));
   });
 
   renderCards();
