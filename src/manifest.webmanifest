@@ -1,0 +1,16 @@
+{
+  "name": "笠原流 旬のレシピ検索帳【賛否両論】",
+  "short_name": "旬のレシピ",
+  "description": "【賛否両論】笠原将弘の料理のほそ道 厳選動画まとめ。材料・季節からレシピ動画を検索。",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#e9e4d7",
+  "theme_color": "#223a54",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

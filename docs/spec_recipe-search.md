@@ -151,3 +151,18 @@ CSV の `season` 列に `all` を指定する。
 | tools/update_recipes.py | 現行 | CSV → HTML 反映(除外・季節・材料の自動判定) |
 | Get-SanpiVideoList.ps1 | **TODO: 未取込** | YouTube Data API → CSV(代替取得手段)。Windows機にあり本リポジトリ未収載。入手後 tools/ へ配置 |
 | Convert-CsvToRecipeHtml.ps1 | **破棄** | update_recipes.py と仕様不一致(除外ルール・辞書非対応)のため 2026-07-05 に破棄 |
+
+## 7. スマートフォン対応・公開(2026-07-05 追加)
+
+- **公開**: GitHub Pages。`.github/workflows/pages.yml` が main への push(src/ 変更時)で
+  src/ のみを公開し、`sanpiryoron_seasonal_recipes.html` を `index.html` として配信する。
+  docs/(仕様書)・tools/・data/ は公開対象外。
+- **PWA / ホーム画面追加**: `src/manifest.webmanifest`(display: standalone、
+  short_name「旬のレシピ」、テーマ色 #223a54 / 背景色 #e9e4d7)と
+  `src/icons/`(icon-192 / icon-512 / apple-touch-icon 180 / favicon-32)。
+  アイコンは藍色地に朱色の印鑑+「旬」(Songti SC Bold で生成、PIL スクリプトによる)。
+- **全画面表示**: viewport に `viewport-fit=cover`、`.container` に
+  `env(safe-area-inset-*)` を加算しノッチ・ホームバー端末でも欠けなし。
+  480px 以下は上下パディングを縮小。
+- HTML 単体をファイルとして開いた場合、manifest / icons が無くても
+  表示・動作に影響はない(favicon が出ないのみ)。
